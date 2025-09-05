@@ -4,11 +4,11 @@ Documentação dos sistemas Senior — funcionalidades dos produtos, procediment
 ---
 
 ## Índice
-- [Senior WMS - Silt](#senior-wms---silt)
+- [WMS Silt](#wms-silt)
   - [Logs](#logs)
     - [Criação de usuário](#criação-de-usuário)
 
-## Senior WMS - Silt
+## WMS Silt
 
 ### Logs
 Logs do WMS Silt usados como referência para buscas na tela Log de Segurança.
