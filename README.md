@@ -6,7 +6,6 @@ Documentação dos sistemas Senior — funcionalidades dos produtos, procediment
 ## Índice
 - [WMS Silt](#wms-silt)
   - [Logs](#logs)
-    - [Criação de usuário](#criação-de-usuário)
 
 ## WMS Silt
 
