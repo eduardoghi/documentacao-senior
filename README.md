@@ -1,5 +1,8 @@
 # documentacao-senior
 Documentação dos sistemas Senior — funcionalidades dos produtos, procedimentos e resolução de problemas.
+> [!IMPORTANT]
+> Todos os exemplos e consultas SQL relacionados ao ERP neste repositório foram escritos para **Oracle** (PL/SQL).  
+> Se você utiliza outro tipo de banco de dados, adapte a sintaxe antes de executar.
 
 ---
 
