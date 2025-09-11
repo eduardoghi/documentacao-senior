@@ -7,10 +7,101 @@ Documentação dos sistemas Senior — funcionalidades dos produtos, procediment
 ---
 
 ## Índice
+- [ERP](#erp)
+  - [Erros e Situações](#erros-e-situações)
 - [WMS Silt](#wms-silt)
   - [Logs](#logs)
 - [Integrações](#integrações)
   - [ERP-WMS](#erp-wms)
+
+---
+
+## ERP
+
+### Erros e Situações
+
+---
+
+Situação: Na tela “Transferências de Produtos” (F210TPA — Suprimentos → Gestão de Estoques → Controle de Estoque → Transferência) a seguinte mensagem aparece ao tentar transferir estoque:
+
+"As seguintes transferências não foram realizadas, pois os depósitos nos quais os produtos estão presentes ou que irão ser transferidos integram com o WMS."
+<img width="1104" height="187" alt="image" src="https://github.com/user-attachments/assets/f184c53b-1aad-42af-8247-eee2ba8cf47e" />
+
+Motivo: A partir da versão 5.10.4.72 do ERP foi incluído um bloqueio para impedir transferências quando o depósito integra com o WMS. (verificação do campo e205dep.intwms)
+
+<img width="1119" height="233" alt="image" src="https://github.com/user-attachments/assets/a088da06-e9fd-4ada-a994-8abefd82d992" />
+
+
+Solução: Se você tem certeza do que está fazendo e tem acesso ao banco como DBA, pode seguir o procedimento abaixo para executar a transferência.
+
+O sistema, para exibir essa mensagem, verifica o valor da coluna e205dep.intwms do depósito. Assim, é possível forçar a transferência sem alterar esse valor na tabela original, usando um schema auxiliar:
+
+1 -  Criar schema auxiliar no banco.
+```sqlpl
+CREATE USER maskvalor IDENTIFIED BY "Senha123123";
+```
+
+2 - Conceder permissões para o novo schema logar, criar views e fazer SELECT na tabela e205dep.
+```sqlpl
+GRANT CREATE SESSION, CREATE VIEW TO maskvalor;
+GRANT SELECT ON schemaerp.e205dep TO maskvalor;
+```
+
+3 - Criar uma VIEW no schema auxiliar que lê e205dep, mas retorna 'N' em intwms conforme a condição.
+```sqlpl
+CREATE OR REPLACE
+VIEW maskvalor.e205dep AS
+SELECT
+    codemp, coddep, desdep, abrdep, tipdep, codmde, mskdep, nivdep, qtdpos, pribus, cpmdep, lardep, altdep, cappes, capvol, codfil, depcpr, estneg, disxpl, indclt, codccu,
+    crirat, ctared, ctarcr, ctafdv, ctafcr, sitdep, obsdep, seqdep, geremb, conaep, depven, depiql, invemb,
+    CASE
+        WHEN coddep = 'WMS' THEN 'N'
+        ELSE intwms
+    END AS intwms,
+    msgesn, usu_codtns, usu_datzer, usu_usuzer, depvir, criord, intwmw, intpos, codimr, sitwmw
+FROM
+    schemaerp.e205dep;
+```
+
+4 - Criar sinônimos no schema auxiliar para os objetos do schema do ERP, exceto e205dep.
+```sqlpl
+BEGIN
+    FOR r IN (
+        SELECT
+            object_name,
+            object_type
+        FROM
+            dba_objects
+        WHERE
+            owner = 'SCHEMAERP'
+            AND object_type IN ('TABLE', 'VIEW', 'SEQUENCE', 'PACKAGE', 'FUNCTION', 'PROCEDURE', 'TYPE', 'SYNONYM')
+            AND object_name <> 'E205DEP'
+    ) LOOP
+        BEGIN
+            EXECUTE IMMEDIATE
+                'CREATE OR REPLACE SYNONYM maskvalor.' || r.object_name || ' FOR schemaerp.' || r.object_name;
+        EXCEPTION
+            WHEN OTHERS THEN
+                NULL;
+        END;
+    END LOOP;
+END;
+```
+
+5 - Criar uma trigger para, ao logar no banco a partir do seu computador, mudar o CURRENT_SCHEMA para o schema auxiliar.
+```sqlpl
+CREATE OR REPLACE TRIGGER trg_maskerp_current_schema
+AFTER LOGON ON SCHEMA
+BEGIN
+    IF UPPER(SYS_CONTEXT('USERENV', 'HOST')) LIKE '%EDUARDOG' THEN
+        EXECUTE IMMEDIATE 'ALTER SESSION SET CURRENT_SCHEMA = maskerp';
+    END IF;
+END;
+```
+
+Agora, abra o ERP e tente a transferência: a mensagem não deve mais aparecer, pois o valor de intwms retornará 'N' pela view criada (e não pela tabela original). Assim, você executa a transferência sem alterar a tabela e sem impactar outros usuários.
+
+Após concluir a transferência, desative a trigger e reabra o sistema para evitar que ações futuras em seu ERP usem o valor mascarado de intwms e impeçam a integração com o WMS por engano.
 
 ---
 
