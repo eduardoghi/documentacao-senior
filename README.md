@@ -130,6 +130,11 @@ NOTA 255107 RETIRADA DA ONDA CANCELADA: 204891
 REMOVEU O IDNOTAFISCAL: 255107 DO IDONDA: 204891
 ```
 
+#### Vincular lote ao pedido na tela "Liberar Nota Fiscal para Expedição"
+```log
+VINCULOU O LOTE 9694688 NA SEPARAÇÃO ESPECIFICA PARA O IDNOTAFISCAL 258162
+```
+
 ---
 
 ## Integrações
