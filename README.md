@@ -154,7 +154,7 @@ Erro:	Erro ao processar cancelamento, identificador único: "31aac8d7-8820-47ae-
 <img width="1717" height="440" alt="image" src="https://github.com/user-attachments/assets/5430f49c-c7df-494c-a460-f020d21a8c4e" />
 Motivo: O usuário de integração não possui as permissões necessárias para fazer o cancelamento no ERP.
 
-Solução: No ERP altere o valor para Sim nas linhas "Alterar Situação Pedido", "Alterar Situação NF Saída", "Reabilitar NF Saída Emitida" e "Cancelar NF Saída" para o usuário de integração na tela "Parametros de Usuário para Vendas" (F099UVE - Cadastros -> Usuários -> Parametros por Gestão -> Vendas, Faturamento e Transporte)
+Solução: No ERP altere o valor para Sim nas linhas "Alterar Situação Pedido", "Alterar Situação NF Saída", "Cancelar NF-e Exp", "Reabilitar NF Saída Emitida" e "Cancelar NF Saída" para o usuário de integração na tela "Parametros de Usuário para Vendas" (F099UVE - Cadastros -> Usuários -> Parametros por Gestão -> Vendas, Faturamento e Transporte)
 
 No Senior-X você pode ver qual é o usuário que faz a integração em Tecnologia -> Configuração -> Por Tenant -> erp_isl -> int_integrador_bifrost -> Editar -> aba Sistema
 <img width="1715" height="666" alt="image" src="https://github.com/user-attachments/assets/da52bdbd-f364-4311-978d-980a4df2a39a" />
