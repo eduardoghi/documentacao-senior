@@ -124,6 +124,10 @@ Após concluir a transferência, desative a trigger e reabra o sistema para evit
 <a name="procedimentos-wms"></a>
 ### Procedimentos
 
+#### Desfazer conferência concluída de pedido de venda (packing)
+Para desfazer a conferência de um pedido de venda já concluída (packing), cancele todos os volumes vinculados ao pedido na tela **Gerenciador de Volume**.
+
+
 ### Logs
 Logs do WMS Silt usados como referência para buscas na tela Log de Segurança.
 
