@@ -1,5 +1,18 @@
 # documentacao-senior
 Documentação dos sistemas Senior — funcionalidades dos produtos, procedimentos e resolução de problemas.
+
+> [!IMPORTANT]
+> **Aviso legal**  
+> 
+> Este repositório é um projeto **pessoal e independente**, mantido por uma única pessoa, **sem qualquer vínculo, associação, patrocínio, parceria comercial ou endosso** da **Senior Sistemas**.
+>  
+> Todo o conteúdo aqui publicado tem **finalidade exclusivamente informativa** e foi elaborado com base em experiências e referências públicas. **Não representa documentação oficial** da Senior Sistemas nem substitui materiais, contratos, garantias ou suporte do fabricante.  
+>  
+> **Marcas, nomes e logotipos** eventualmente mencionados são de propriedade de seus **respectivos titulares**. O uso nominativo serve apenas para referência e **não implica afiliação**.  
+>  
+> O material é fornecido **"no estado em que se encontra"**, **sem garantias** de qualquer tipo, explícitas ou implícitas. O uso é por sua conta e risco. Para orientações oficiais, consulte os canais e a documentação da Senior Sistemas.
+
+
 > [!IMPORTANT]
 > Todos os exemplos e consultas SQL relacionados ao ERP neste repositório foram escritos para **Oracle** (PL/SQL).  
 > Se você utiliza outro tipo de banco de dados, adapte a sintaxe antes de executar.
