@@ -36,17 +36,43 @@ Documentação dos sistemas Senior — funcionalidades dos produtos, procediment
 
 ---
 
-Situação: Na tela “Transferências de Produtos” (F210TPA — Suprimentos → Gestão de Estoques → Controle de Estoque → Transferência) a seguinte mensagem aparece ao tentar transferir estoque:
+#### Situação: Pré-fatura gerou com número 0:
+
+<img width="362" height="95" alt="Screenshot" src="https://github.com/user-attachments/assets/769cbdde-bfa2-44fe-a6e5-9743b292bb83" />
+
+Motivo: desconhecido.
+
+Solução: excluir a pré-fatura e refazer. Para evitar recorrência, utilizar o identificador de regra `COM-135CGFCA02` para **impedir a geração da pré-fatura quando `numpfa = 0`**.
+
+```lsp
+definir numero VComNumAne;
+definir numero VComNumPfa;
+
+definir alfa VComOperacao;
+se ((VComOperacao = "CONSISTINDO") e (VComNumPfa = 0)) {
+    definir alfa aNumAne;
+    IntParaAlfa(VComNumAne, aNumAne);
+    
+    definir alfa aMsg;
+    aMsg = "Não foi possível gerar a pré-fatura da carga " + aNumAne + ". Número da pré-fatura = 0";
+
+    Mensagem(Erro, aMsg);
+}
+```
+
+---
+
+#### Situação: Na tela “Transferências de Produtos” (F210TPA — Suprimentos → Gestão de Estoques → Controle de Estoque → Transferência) a seguinte mensagem aparece ao tentar transferir estoque:
 
 "As seguintes transferências não foram realizadas, pois os depósitos nos quais os produtos estão presentes ou que irão ser transferidos integram com o WMS."
 <img width="1104" height="187" alt="image" src="https://github.com/user-attachments/assets/f184c53b-1aad-42af-8247-eee2ba8cf47e" />
 
-Motivo: A partir da versão 5.10.4.72 do ERP foi incluído um bloqueio para impedir transferências quando o depósito integra com o WMS. (verificação do campo e205dep.intwms)
+Motivo: a partir da versão 5.10.4.72 do ERP foi incluído um bloqueio para impedir transferências quando o depósito integra com o WMS. (verificação do campo e205dep.intwms)
 
 <img width="1119" height="233" alt="image" src="https://github.com/user-attachments/assets/a088da06-e9fd-4ada-a994-8abefd82d992" />
 
 
-Solução: Se você tem certeza do que está fazendo e tem acesso ao banco como DBA, pode seguir o procedimento abaixo para executar a transferência.
+Solução: se você tem certeza do que está fazendo e tem acesso ao banco como DBA, pode seguir o procedimento abaixo para executar a transferência.
 
 O sistema, para exibir essa mensagem, verifica o valor da coluna e205dep.intwms do depósito. Assim, é possível forçar a transferência sem alterar esse valor na tabela original, usando um schema auxiliar:
 
