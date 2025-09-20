@@ -35,6 +35,24 @@ Documentação dos sistemas Senior — funcionalidades dos produtos, procediment
 ### Erros e Situações
 
 ---
+#### Situação: Como saber quem está logado no sistema e qual é o código de usuário?
+
+Para listar as sessões e vincular cada login ao código de usuário:
+
+```sqlpl
+SELECT
+    r911sec.*,
+    r910ent.codent
+FROM
+    r911sec
+    LEFT JOIN r910ent
+        ON r910ent.nomexb = r911sec.appusr
+```
+
+r911sec registra as sessões (campo appusr = usuário que abriu a sessão no sistema).  
+r910ent guarda o cadastro do usuário (campo codent = código do usuário e nomexb = login).
+
+---
 
 #### Situação: Pré-fatura gerou com número 0:
 
