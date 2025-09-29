@@ -77,6 +77,7 @@ se ((VComOperacao = "CONSISTINDO") e (VComNumPfa = 0)) {
     Mensagem(Erro, aMsg);
 }
 ```
+Obs: Na versão [5.10.4.75](https://documentacao.senior.com.br/gestaoempresarialerp/notasdaversao/#5-10-4.htm#813105) a Senior reporta a correção desse comportamento. Ainda assim, mantenha o identificador de regra ativo como salvaguarda.
 
 ---
 
