@@ -149,11 +149,11 @@ END;
 
 5 - Criar uma trigger para, ao logar no banco a partir do seu computador, mudar o CURRENT_SCHEMA para o schema auxiliar.
 ```sqlpl
-CREATE OR REPLACE TRIGGER trg_maskerp_current_schema
+CREATE OR REPLACE TRIGGER trg_maskvalor_current_schema
 AFTER LOGON ON SCHEMA
 BEGIN
     IF UPPER(SYS_CONTEXT('USERENV', 'HOST')) LIKE '%EDUARDOG' THEN
-        EXECUTE IMMEDIATE 'ALTER SESSION SET CURRENT_SCHEMA = maskerp';
+        EXECUTE IMMEDIATE 'ALTER SESSION SET CURRENT_SCHEMA = maskvalor';
     END IF;
 END;
 ```
