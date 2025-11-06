@@ -171,7 +171,17 @@ Após concluir a transferência, desative a trigger e reabra o sistema para evit
 
 #### Desfazer conferência concluída de pedido de venda (packing)
 Para desfazer a conferência de um pedido de venda já concluída (packing), cancele todos os volumes vinculados ao pedido na tela **Gerenciador de Volume**.
+<br/><br/>
 
+### Integração de Arquivo
+
+A tela Integração de Arquivo pode ser usada para reenviar integrações.
+
+Para localizar integrações de pré-fatura, informe o idNotaFiscal do pedido no campo idOperação.
+
+<img width="1881" height="842" alt="2025-11-06 09_19_47-" src="https://github.com/user-attachments/assets/df3e0bc3-b277-4b34-be5e-d71bca66a539" />
+
+<br/><br/>
 
 ### Logs
 Logs do WMS Silt usados como referência para buscas na tela Log de Segurança.
