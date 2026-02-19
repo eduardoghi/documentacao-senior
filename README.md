@@ -22,6 +22,7 @@ Documentação dos sistemas Senior — funcionalidades dos produtos, procediment
 ## Índice
 - [ERP](#erp)
   - [Erros e Situações](#erros-e-situações)
+- [SDE](#sde)
 - [WMS Silt](#wms-silt)
   - [Procedimentos](#procedimentos-wms)
   - [Logs](#logs)
@@ -161,6 +162,296 @@ END;
 Agora, abra o ERP e tente a transferência: a mensagem não deve mais aparecer, pois o valor de intwms retornará 'N' pela view criada (e não pela tabela original). Assim, você executa a transferência sem alterar a tabela e sem impactar outros usuários.
 
 Após concluir a transferência, desative a trigger e reabra o sistema para evitar que ações futuras em seu ERP usem o valor mascarado de intwms e impeçam a integração com o WMS por engano.
+
+---
+
+## SDE
+
+### Posso alterar coisas no schema do banco do SDE?
+
+#### Não.
+Não devem ser criados ou alterados objetos no schema do SDE (por exemplo: *views*, tabelas, triggers, procedures).
+No processo de atualização, o sistema valida/consiste a estrutura do banco; qualquer objeto extra ou modificação pode causar falhas problemas.
+
+---
+
+### Onde posso ver o dicionário de dados do SDE?
+
+Conforme citado na [Documentação da Senior](https://suporte.senior.com.br/hc/pt-br/articles/4408629051540-EDOCS-Banco-de-Dados-Existe-algum-dicion%C3%A1rio-de-Banco-de-Dados-do-eDocs), não há um dicionário de dados público do banco do SDE, pois a Senior não recomenda intervenções diretas no banco de dados.
+
+Ainda assim, para consultas (*SELECT*) e análises, seguem algumas tabelas e colunas úteis:
+
+---
+
+### **N130NFE** — Informações gerais das Notas Fiscais
+
+* `seqnfe` — Sequência da NF-e
+
+* `seqfil` — Sequência da filial
+
+* `sequfd` — Sequência da UF do destinatário
+
+* `sequfe` — Sequência da UF do emitente
+
+* `sitnfe` — Situação da Nota Fiscal
+
+  * `1` — Recebida
+  * `4` — Enviada
+  * `6` — Autorizada
+  * `7` — Denegada
+  * `8` — Rejeitada
+  * `9` — Cancelada
+  * `13` — Inutilizada
+  * `41` — Registrado DPEC
+  * `56` — Cancelada fora do prazo
+  * `57` — Autorizada fora do prazo
+  * `92` — Manifestação gerada automaticamente
+  * `93` — Falha
+  * `94` — Preparado para envio à SEFAZ
+  * `95` — Aguardando saída da contingência
+  * `96` — Impresso em contingência
+  * `97` — Registrado EPEC (cliente remoto)
+
+* `sitret` — Situação do Retorno (SDE → ERP)
+
+  * `1` — Não retornado
+  * `2` — Retornado
+  * `3` — Erro no retorno
+  * `4` — Desativado
+
+* `sitimp` — Situação da impressão do DANFE
+
+  * `1` — Pendente
+  * `2` — Impressa
+  * `3` — Desativado
+  * `4` — Impresso em contingência
+  * `5` — Impressão temporária
+
+* `vernfe` — Versão do layout da NF-e
+
+* `numnfe` — Número da nota fiscal
+
+* `sernfe` — Série da nota fiscal
+
+* `totnfe` — Valor total da nota fiscal
+
+* `datemi` — Data/hora de emissão
+
+* `datets` — Data/hora de entrada/saída
+
+* `doctip` — Tipo do documento do destinatário
+
+  * `1` — CNPJ
+  * `2` — CPF
+  * `3` — Estrangeiro
+
+* `docdes` — Documento do destinatário (CNPJ/CPF)
+
+* `nomdes` — Nome do destinatário
+
+* `datrec` — Data/hora de recebimento
+
+* `prorec` — Protocolo de autorização de uso
+
+* `idenfe` — Chave de Acesso (SDE)
+
+* `ideerp` — Chave de Acesso (ERP)
+
+* `tippro` — Tipo do processamento
+
+  * `E` — Emissão
+  * `R` — Recebimento
+
+* `datcon` — Data/hora da consulta na SEFAZ
+
+* `sitant` — Situação anterior do documento
+
+* `cnpemi` — CNPJ do emitente
+
+* `nomemi` — Nome do emitente
+
+* `tipemi` — Tipo de emissão da NF-e
+
+  * `1` — Normal (emissão normal)
+  * `2` — Contingência FS (Formulário de Segurança)
+  * `3` — Contingência SCAN (Sistema de Contingência do Ambiente Nacional)
+  * `4` — Contingência DPEC (Declaração Prévia de Emissão em Contingência)
+  * `5` — Contingência FS-DA (Formulário de Segurança para Impressão do DANFE)
+  * `6` — Contingência SVC-AN (SEFAZ Virtual do Ambiente Nacional)
+  * `7` — Contingência SVC-RS (SEFAZ Virtual do RS)
+
+* `toticm` — Valor do ICMS
+
+* `subtri` — Valor do ICMS-ST
+
+* `ieemis` — Inscrição estadual do emitente
+
+* `datctg` — Data/hora da contingência
+
+* `tipope` — ?
+
+* `iedest` — Inscrição estadual do destinatário
+
+* `fusctg` — Fuso horário da contingência
+
+* `fusemi` — Fuso horário da emissão
+
+* `fusrec` — Fuso horário do recebimento
+
+* `cameml` — Caminho do arquivo EML
+
+* `digval` — Digest Value da NF-e
+
+* `motctg` — Motivo da contingência
+
+* `tiprel` — ?
+
+* `tipnfe` — ?
+
+* `ideger` — ?
+
+* `sitaud` — Situação da auditoria do documento
+
+* `datpro` — ?
+
+* `datimp` — ?
+
+* `tipamb` — Tipo de ambiente da NF-e
+
+  * `1` — Produção
+  * `2` — Homologação
+
+* `verori` — Versão do aplicativo/processo emissor
+
+* `tpdemi` — ?
+  
+* `sitman` — Situação da manifestação do destinatário da NF-e (código do evento SEFAZ)
+
+  * `210200` — Confirmação da Operação
+  * `210210` — Ciência da Operação
+  * `210220` — Desconhecimento da Operação
+  * `210240` — Operação não Realizada
+
+* `codsfz` —  ?
+
+* `msgsfz` —  ?
+
+* `sitene` —  ?
+
+* `datman` — Data da manifestação do destinatário
+
+* `emialf` — Identificador alfanumérico do emitente (CNPJ em formato texto)
+
+---
+
+### **N130XML** — Ligação entre as Notas Fiscais e o XML
+
+* `seqnxm` — Sequência/ID do registro
+
+* `seqxml` — Sequência do XML
+
+* `seqnf3` — Sequência de NF3-e
+
+* `hasarq` — Hash do arquivo XML
+
+* `datsal` — Data/hora em que o arquivo XML foi salvo
+
+* `tiparq` — Tipo de arquivo do XML
+
+  * `1` — Emissão de NF-e
+  * `2` — Cancelamento de NF-e
+  * `3` — Cancelamento de evento
+  * `4` — Manifestação do destinatário
+  * `5` — Carta de correção
+  * `6` — Evento de EPEC NF-e
+  * `7` — Inutilização
+  * `8` — Pedido de prorrogação de suspensão do ICMS
+  * `9` — Cancelamento de pedido de prorrogação de suspensão do ICMS
+  * `10` — Resposta do Fisco a um pedido de prorrogação
+  * `11` — Resposta do Fisco a um cancelamento de pedido de prorrogação
+
+* `seqinu` — Sequência de inutilização
+* `envdat` — ?
+* `seqrgs` — ?
+* `seqcrs` — ?
+
+---
+
+### **N100XML** — Arquivos XML
+
+* `seqxml` — Sequência/ID do XML
+* `arqxml` — ?
+* `binarq` — Conteúdo do XML
+
+---
+
+### **N100EST** — Estados
+
+* `seqest` — Sequência do estado
+* `codpai` — Código do país
+* `sigest` — Sigla do estado
+* `nomest` — Nome do estado
+* `utcest` — Fuso horário (UTC)
+* `utcver` — Fuso horário (UTC) - horário de verão
+
+---
+
+### **N100PAI** — Países
+
+* `codpai` — Código do país
+* `dscpai` — Descrição do país
+* `codiso` — Código ISO numérico do país (ISO 3166-1 numeric)
+* `alpcod` — Código ISO alfabético (2 letras) do país (ISO 3166-1 alpha-2)
+
+---
+
+### **N100EMP** — Empresas
+
+* `seqemp` — Sequência da empresa
+* `seremp` — Serial da empresa (identifica o cliente no sistema de licenciamento)
+* `tipdoc` — Tipo do documento da empresa
+
+  * `1` — CNPJ
+  * `2` — CPF
+
+* `nomemp` — Nome da empresa
+* `cnpemp` — CNPJ da empresa
+
+---
+
+### **N100FIL** — Filiais
+
+* `seqfil` — Sequência da filial (CNPJ)
+* `seqemp` — Sequência da empresa
+* `seqmun` — Sequência do município
+* `seqest` — Sequência do estado
+* `vernhi` — ?
+* `tipdoc` — Tipo do documento da filial
+
+  * `1` — CNPJ
+  * `2` — CPF
+
+* `sitfil` — Situação da filial
+
+  * `0` — Ativa
+  * `1` — Inativa, com permissão para visualizar documentos
+  * `2` — Inativa, sem permissão para visualizar documentos
+
+* `codfil` — Código da filial
+* `nomfil` — Nome da filial
+* `docfil` — Documento da filial (CNPJ)
+
+---
+
+### **N100MUN** — Municípios
+
+* `seqmun` — Sequência do município
+* `seqest` — Sequência do estado
+* `codsia` — Código do município no SIAFI (Tesouro Nacional)
+* `nommun` — Nome do município
+* `codmds` — ?
+* `codfgm` — ?
+* `recpdf` — ?
 
 ---
 
