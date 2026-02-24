@@ -187,7 +187,7 @@ Ainda assim, para consultas (*SELECT*) e análises, seguem algumas tabelas e col
 
 * `seqnfe` — Sequência da NF-e
 
-* `seqfil` — Sequência da filial
+* `seqfil` — Sequência da filial (CNPJ)
 
 * `sequfd` — Sequência da UF do destinatário
 
@@ -350,7 +350,9 @@ Ainda assim, para consultas (*SELECT*) e análises, seguem algumas tabelas e col
 
 * `seqxml` — Sequência do XML
 
-* `seqnf3` — Sequência de NF3-e
+* `seqenf` — Sequência do evento
+
+* `seqnf3` — Sequência da NF3-e
 
 * `hasarq` — Hash do arquivo XML
 
@@ -374,6 +376,15 @@ Ainda assim, para consultas (*SELECT*) e análises, seguem algumas tabelas e col
 * `envdat` — ?
 * `seqrgs` — ?
 * `seqcrs` — ?
+
+---
+
+### **N130ENF** — Eventos das Notas Fiscais
+
+* `seqenf` — Sequência do evento
+* `seqest` — Sequência do estado
+* `seqfil` — Sequência da filial (CNPJ)
+* `seqnf3` — Sequência da NF3-e
 
 ---
 
