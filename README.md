@@ -170,8 +170,9 @@ Após concluir a transferência, desative a trigger e reabra o sistema para evit
 ### Posso alterar coisas no schema do banco do SDE?
 
 #### Não.
-Não devem ser criados ou alterados objetos no schema do SDE (por exemplo: *views*, tabelas, triggers, procedures).
-No processo de atualização, o sistema valida/consiste a estrutura do banco; qualquer objeto extra ou modificação pode causar falhas problemas.
+Não devem ser criados nem alterados objetos no schema do SDE (como views, tabelas, triggers ou procedures).
+
+Durante o processo de atualização, o sistema realiza validações de consistência na estrutura do banco de dados. Assim, a existência de objetos adicionais ou qualquer alteração fora do padrão pode provocar falhas na atualização.
 
 ---
 
