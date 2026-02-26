@@ -184,18 +184,13 @@ Ainda assim, para consultas (*SELECT*) e análises, seguem algumas tabelas e col
 
 ---
 
-### **N130NFE** — Informações gerais das Notas Fiscais
+### **N130NFE** — Notas Fiscais
 
 * `seqnfe` — Sequência da NF-e
-
 * `seqfil` — Sequência da filial (CNPJ)
-
 * `sequfd` — Sequência da UF do destinatário
-
 * `sequfe` — Sequência da UF do emitente
-
 * `sitnfe` — Situação da Nota Fiscal
-
   * `1` — Recebida
   * `4` — Enviada
   * `6` — Autorizada
@@ -212,67 +207,41 @@ Ainda assim, para consultas (*SELECT*) e análises, seguem algumas tabelas e col
   * `95` — Aguardando saída da contingência
   * `96` — Impresso em contingência
   * `97` — Registrado EPEC (cliente remoto)
-
 * `sitret` — Situação do Retorno (SDE → ERP)
-
   * `1` — Não retornado
   * `2` — Retornado
   * `3` — Erro no retorno
   * `4` — Desativado
-
 * `sitimp` — Situação da impressão do DANFE
-
   * `1` — Pendente
   * `2` — Impressa
   * `3` — Desativado
   * `4` — Impresso em contingência
   * `5` — Impressão temporária
-
 * `vernfe` — Versão do layout da NF-e
-
 * `numnfe` — Número da nota fiscal
-
 * `sernfe` — Série da nota fiscal
-
 * `totnfe` — Valor total da nota fiscal
-
 * `datemi` — Data/hora de emissão
-
 * `datets` — Data/hora de entrada/saída
-
 * `doctip` — Tipo do documento do destinatário
-
   * `1` — CNPJ
   * `2` — CPF
   * `3` — Estrangeiro
-
 * `docdes` — Documento do destinatário (CNPJ/CPF)
-
 * `nomdes` — Nome do destinatário
-
-* `datrec` — Data/hora de recebimento
-
+* `datrec` — Data/hora de recebimento na SEFAZ
 * `prorec` — Protocolo de autorização de uso
-
 * `idenfe` — Chave de Acesso (SDE)
-
 * `ideerp` — Chave de Acesso (ERP)
-
 * `tippro` — Tipo do processamento
-
   * `E` — Emissão
   * `R` — Recebimento
-
 * `datcon` — Data/hora da consulta na SEFAZ
-
 * `sitant` — Situação anterior do documento
-
 * `cnpemi` — CNPJ do emitente
-
 * `nomemi` — Nome do emitente
-
 * `tipemi` — Tipo de emissão da NF-e
-
   * `1` — Normal (emissão normal)
   * `2` — Contingência FS (Formulário de Segurança)
   * `3` — Contingência SCAN (Sistema de Contingência do Ambiente Nacional)
@@ -280,87 +249,51 @@ Ainda assim, para consultas (*SELECT*) e análises, seguem algumas tabelas e col
   * `5` — Contingência FS-DA (Formulário de Segurança para Impressão do DANFE)
   * `6` — Contingência SVC-AN (SEFAZ Virtual do Ambiente Nacional)
   * `7` — Contingência SVC-RS (SEFAZ Virtual do RS)
-
 * `toticm` — Valor do ICMS
-
 * `subtri` — Valor do ICMS-ST
-
 * `ieemis` — Inscrição estadual do emitente
-
 * `datctg` — Data/hora da contingência
-
 * `tipope` — ?
-
 * `iedest` — Inscrição estadual do destinatário
-
 * `fusctg` — Fuso horário da contingência
-
 * `fusemi` — Fuso horário da emissão
-
-* `fusrec` — Fuso horário do recebimento
-
+* `fusrec` — Fuso horário do recebimento na SEFAZ
 * `cameml` — Caminho do arquivo EML
-
 * `digval` — Digest Value da NF-e
-
 * `motctg` — Motivo da contingência
-
 * `tiprel` — ?
-
 * `tipnfe` — ?
-
 * `ideger` — ?
-
 * `sitaud` — Situação da auditoria do documento
-
 * `datpro` — ?
-
 * `datimp` — ?
-
 * `tipamb` — Tipo de ambiente da NF-e
-
   * `1` — Produção
   * `2` — Homologação
-
 * `verori` — Versão do aplicativo/processo emissor
-
 * `tpdemi` — ?
-  
 * `sitman` — Situação da manifestação do destinatário da NF-e (código do evento SEFAZ)
-
   * `210200` — Confirmação da Operação
   * `210210` — Ciência da Operação
   * `210220` — Desconhecimento da Operação
   * `210240` — Operação não Realizada
-
 * `codsfz` —  ?
-
 * `msgsfz` —  ?
-
 * `sitene` —  ?
-
 * `datman` — Data da manifestação do destinatário
-
 * `emialf` — Identificador alfanumérico do emitente (CNPJ em formato texto)
 
 ---
 
 ### **N130XML** — Ligação entre as Notas Fiscais e o XML
 
-* `seqnxm` — Sequência/ID do registro
-
+* `seqnxm` — Sequência do registro
 * `seqxml` — Sequência do XML
-
 * `seqenf` — Sequência do evento
-
 * `seqnf3` — Sequência da NF3-e
-
 * `hasarq` — Hash do arquivo XML
-
 * `datsal` — Data/hora em que o arquivo XML foi salvo
-
 * `tiparq` — Tipo de arquivo do XML
-
   * `1` — Emissão de NF-e
   * `2` — Cancelamento de NF-e
   * `3` — Cancelamento de evento
@@ -372,7 +305,6 @@ Ainda assim, para consultas (*SELECT*) e análises, seguem algumas tabelas e col
   * `9` — Cancelamento de pedido de prorrogação de suspensão do ICMS
   * `10` — Resposta do Fisco a um pedido de prorrogação
   * `11` — Resposta do Fisco a um cancelamento de pedido de prorrogação
-
 * `seqinu` — Sequência de inutilização
 * `envdat` — ?
 * `seqrgs` — ?
@@ -386,6 +318,156 @@ Ainda assim, para consultas (*SELECT*) e análises, seguem algumas tabelas e col
 * `seqest` — Sequência do estado
 * `seqfil` — Sequência da filial (CNPJ)
 * `seqnf3` — Sequência da NF3-e
+
+---
+
+### **N150CTE** — CT-e
+
+* `seqcte` — Sequência do CT-e
+* `seqfil` — Sequência da filial (CNPJ)
+* `seqemi` — Sequência do emitente
+* `seqrem` — Sequência do remetente
+* `seqdes` — Sequência do destinatário
+* `seqexp` — Sequência do expedidor
+* `seqrec` — Sequência do recebedor
+* `seqout` — Sequência do outro tomador
+* `seqenv` — Sequência do município de envio do CT-e (município de onde o CT-e foi transmitido)
+* `seqini` — Sequência do município do início da prestação - tag XML: `<cMunIni>`
+* `seqter` — Sequência do município do término da prestação - tag XML: `<cMunFim>`  
+* `seqicm` — Sequência do ICMS
+* `seqend` — Sequência do endereço
+* `sitcte` — Situação do documento
+  * `0` — Recebido no ERP
+  * `1` — Enviado à SEFAZ
+  * `2` — Rejeitado
+  * `3` — Cancelado
+  * `4` — Inutilizado
+  * `5` — Autorizado
+  * `6` — Denegado 
+  * `7` — Impressão em contingência
+  * `8` — Recebido do fornecedor
+  * `9` — EPEC registrado
+  * `10` — Preparado para envio à SEFAZ
+  * `11` — Aguardando saída em contingência
+* `daterp` — Data/hora de retorno do status ao ERP
+* `sitimp` — ?
+* `codnum` — Código numérico do CT-e que compõe a chave de acesso - tag xml: `<cCT>`
+* `codcfp` — CFOP
+* `natope` — Natureza da operação
+* `forpag` — Forma de pagamento
+  * `0` — Pago
+  * `1` — À pagar
+  * `2` — Outros
+* `moddoc` — Modelo do documento
+* `sercte` — Série do CT-e
+* `numcte` — Número do CT-e
+* `datemi` — Data/hora de emissão
+* `tipimp` — ?
+* `tipemi` — Tipo de emissão do CT-e - tag XML: `<tpEmis>`
+  * `1` — Normal
+  * `4` — EPEC pela SVC
+  * `5` — Contingência FS-DA
+  * `7` — SVC-RS
+  * `8` — SVC-SP
+* `digver` — Dígito verificador da chave de acesso
+* `tipamb` — Tipo do ambiente
+  * `1` — Produção
+  * `2` — Homologação
+* `tipcte` — Tipo do CT-e
+  * `0` — CT-e Normal
+  * `1` — CT-e de Complemento de Valores
+  * `2` — CT-e de Anulação de Valores
+  * `3` — CT-e Substituto
+* `tipapl` — ?
+* `chvref` — Chave de acesso do CT-e referenciado (CT-e Complementar; tag XML: `<infCteComp><chave>`).
+* `tipmod` — Modalidade de transporte
+  * `1` — Rodoviário
+  * `2` — Aéreo
+  * `3` — Aquaviário
+  * `4` — Ferroviário
+* `tipser` — Tipo do serviço
+  * `0` — Normal
+  * `1` — Subcontratação
+  * `2` — Redespacho
+  * `3` — Redespacho Intermediário
+* `indret` — Indicador de retirada pelo recebedor no local de destino (Aeroporto/Filial/Porto/Estação) — tag XML: `<retira>`
+  * `0` — Sim (retira)
+  * `1` — Não (não retira)
+* `detret` — Detalhes da retirada — tag XML: `<xDetRetira>`
+* `tiptom` — Tipo do tomador
+  * `0` — Remetente
+  * `1` — Expedidor
+  * `2` — Recebedor
+  * `3` — Destinatário
+* `datcon` — Data/hora contingência
+* `juscon` — Justificativa contingência
+* `valpre` — Valor total do serviço prestado - tag xml: `<vTPrest>`
+* `valrec` — Valor a receber/recebido pelo serviço - tag xml: `<vRec>`
+* `chvcte` — Chave de acesso (SDE)
+* `inffis` — Informações adicionais de interesse do Fisco — tag XML: `<infAdFisco>`
+* `vercte` — Versão do layout do CT-e - tag XML: `<verCTe>`
+* `datrec` — Data/hora recebimento na SEFAZ
+* `numpro` — Protocolo de autorização de uso
+* `digval` — Digest value - tag XML: `<DigestValue>`
+* `inssuf` — Inscrição do destinatário na SUFRAMA
+* `tippro` — Tipo do processamento
+  * `E` — Emissão
+  * `R` — Recebimento
+* `chverp` — Chave de acesso (ERP)
+* `chvctg` — ?
+* `verpse` — Versão do aplicativo da SEFAZ - tag XML: `<verAlic>`
+* `valimp` — Valor dos impostos - tag XML: `<vTotTrib>`
+* `loccnp` — ?
+* `loccpf` — ?
+* `locnom` — ?
+* `datcos` — Data/hora da consulta na SEFAZ
+* `sitret` — Situação do Retorno (SDE → ERP)
+  * `1` — Não retornado
+  * `2` — Retornado
+  * `3` — Erro no retorno
+  * `4` — Desativado
+* `verapl` — Versão do aplicativo/processo emissor - tag xml: `<verProc>`
+* `cameml` — Caminho do arquivo EML
+* `uftbca` — ?
+* `uftali` — ?
+* `uftall` — ?
+* `uftvat` — ?
+* `uftvai` — ?
+* `uftper` — ?
+* `uftpif` — ?
+* `uftvif` — ?
+* `fusemi` — Fuso horário da emissão
+* `fusrec` — Fuso horário do recebimento na SEFAZ
+* `fuscon` — Fuso horário da contingência
+* `datimp` — ?
+* `oridoc` — ?
+* `sitene` — ?
+* `datpro` — ?
+* `indmig` — ?
+
+---
+
+### **N150XML** —  Ligação entre os CT-e e o XML
+
+* `seqnxm` — Sequência do registro
+* `seqxml` — Sequência do XML
+* `seqcte` — Sequência do CT-e
+* `seqcan` — Sequência do cancelamento
+* `seqect` — Sequência do evento
+* `hasarq` — Hash do arquivo XML
+* `datsal` — Data/hora em que o arquivo XML foi salvo
+* `tiparq` — Tipo de arquivo do XML
+* `seqinu` — Sequência de inutilização
+* `envdat` — ?
+
+---
+
+### **N100ICM** — ICMS do CT-e
+
+* `seqicm` — Sequência do ICMS
+* `valobc` — Base de cálculo
+* `aliquo` — Alíquota do ICMS
+* `valicm` — Valor do ICMS
 
 ---
 
@@ -414,6 +496,34 @@ Ainda assim, para consultas (*SELECT*) e análises, seguem algumas tabelas e col
 * `dscpai` — Descrição do país
 * `codiso` — Código ISO numérico do país (ISO 3166-1 numeric)
 * `alpcod` — Código ISO alfabético (2 letras) do país (ISO 3166-1 alpha-2)
+
+---
+
+### **N100PES** — Cadastro de Pessoas (PJ/PF)
+
+* `seqpes` — Sequência da pessoa
+* `seqend` — Sequência do endereço
+* `numcnp` — Número do cnpj
+* `numcpf` — Número do cpf
+* `numice` — Inscrição estadual
+* `dscnom` — Nome
+* `dscfan` — Nome fantasia
+* `numtel` — Número de telefone
+* `dschas` — Hash do cadastro
+* `cnpalf` — Cnpj alfanúmerico
+
+---
+
+### **N100END** — Cadastro de Endereços
+
+* `seqend` — Sequência do endereço
+* `seqmun` — Sequência do município
+* `codpai` — Código do país
+* `dscnum` — Número do logradouro
+* `dsccpl` — Complemento do endereço
+* `dscbar` — Bairro
+* `numcep` — CEP
+* `dsclog` — Logradouro
 
 ---
 
@@ -539,8 +649,3 @@ No Senior-X você pode ver qual é o usuário que faz a integração em Tecnolog
 <img width="1715" height="666" alt="image" src="https://github.com/user-attachments/assets/da52bdbd-f364-4311-978d-980a4df2a39a" />
 
 <img width="950" height="576" alt="image" src="https://github.com/user-attachments/assets/0e8b6559-8f70-41a4-a1be-e1f8c76d1561" />
-
-
-
-
-
