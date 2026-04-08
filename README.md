@@ -584,6 +584,10 @@ Ainda assim, para consultas (*SELECT*) e análises, seguem algumas tabelas e col
 
 #### Desfazer conferência concluída de pedido de venda (packing)
 Para desfazer a conferência de um pedido de venda já concluída (packing), cancele todos os volumes vinculados ao pedido na tela **Gerenciador de Volume**.
+
+#### Trocar usuário da conferência
+
+Para trocar o usuário responsável pela conferência de um pedido após o início da conferência, utilize a tela **Gerenciador de Packing**.
 <br/><br/>
 
 ### Integração de Arquivo
