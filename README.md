@@ -261,7 +261,11 @@ Ainda assim, para consultas (*SELECT*) e análises, seguem algumas tabelas e col
 * `cameml`: Caminho do arquivo EML
 * `digval`: Digest Value da NF-e
 * `motctg`: Motivo da contingência
-* `tiprel`: ?
+* `tiprel`: Tipo de relação da filial com a NF-e
+  * `0`: Emissor
+  * `1`: Destinatário
+  * `2`: Terceiro
+  * `3`: Transportador
 * `tipnfe`: ?
 * `ideger`: ?
 * `sitaud`: Situação da auditoria do documento
