@@ -325,6 +325,21 @@ Ainda assim, para consultas (*SELECT*) e análises, seguem algumas tabelas e col
 
 ---
 
+### **N130VIN**: Vínculos/Eventos relacionados à NF-e
+
+* `seqvin`: Sequência do vínculo/evento registrado.
+* `chvnfe`: Chave de acesso da NF-e relacionada ao evento.
+* `tipevt`: Tipo do evento vinculado à NF-e.
+    * `610600`: CT-e Autorizado.
+    * `610601`: CT-e Cancelado.
+    * `610610`: MDF-e Autorizado.
+* `dataut`: Data/hora de autorização do evento.
+* `fusaut`: Fuso horário da autorização do evento.
+* `proaut`: Protocolo de autorização do evento.
+* `tipdoc`: ?
+
+---
+
 ### **N150CTE**: CT-e
 
 * `seqcte`: Sequência do CT-e
