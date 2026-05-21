@@ -171,30 +171,33 @@ Após concluir a transferência, desative a trigger e reabra o sistema para evit
 
 O **SQLMon** é uma ferramenta utilizada para capturar e visualizar comandos SQL executados por aplicações Senior, auxiliando em análises técnicas, investigação de comportamento do sistema, validação de consultas e diagnóstico de problemas.
 
-A Senior disponibiliza o aplicativo SQLMon em sua base de conhecimento no artigo:  
+A Senior disponibiliza o aplicativo SQLMon em sua base de conhecimento no artigo:
 [TECNOLOGIA - SQLMon - Como obter e iniciar o uso do aplicativo SQLMon](https://suporte.senior.com.br/hc/pt-br/articles/7113170178324-TECNOLOGIA-SQLMon-Como-obter-e-iniciar-o-uso-do-aplicativo-SQLMon).
 
 > [!IMPORTANT]
-> A versão disponibilizada neste repositório é uma versão **patcheada** do `sqlmon.exe`, mantida neste projeto apenas como apoio técnico.  
+> A versão disponibilizada neste repositório é uma versão **patcheada** do SQLMon, mantida neste projeto apenas como apoio técnico.
 > Ela não é uma versão oficial da Senior Sistemas.
 
 > [!WARNING]
-> Execute sempre o SQLMon como administrador.  
+> Execute sempre o SQLMon como administrador.
 > Caso contrário, a ferramenta pode não identificar corretamente a sessão do sistema Senior e pode não capturar os comandos SQL esperados.
 
 ### Uso recomendado
 
-1. Baixe a versão corrigida do `sqlmon.exe` disponível neste repositório.
-2. Extraia os arquivos em uma pasta local, por exemplo:
+1. Baixe o arquivo `.zip` da versão corrigida disponível neste repositório.
+2. Extraia o conteúdo em uma pasta local, por exemplo:
+
    ```text
    C:\SQLmon
    ```
-3. Execute o `sqlmon.exe` sempre como administrador:
+3. Mantenha o `sqlmon.exe` e a `SMCLIENT.DLL` na mesma pasta.
+4. Execute o `sqlmon.exe` sempre como administrador:
+
    ```text
    Botão direito > Executar como administrador
    ```
-4. Somente depois abra o sistema Senior que será monitorado.
-5. Verifique se o SQLMon identificou a sessão do sistema antes de iniciar a análise.
+5. Somente depois abra o sistema Senior que será monitorado.
+6. Verifique se o SQLMon identificou a sessão do sistema antes de iniciar a análise.
 
 ### Correção aplicada na versão deste repositório
 
@@ -303,11 +306,14 @@ A rotina removida também eliminava caracteres de controle, como `TAB`, `LF` e `
 
 ### Download da versão corrigida
 
-A versão patcheada do `sqlmon.exe` está disponível neste repositório para download.
+A versão patcheada está disponível neste repositório em um arquivo `.zip`, contendo o `sqlmon.exe` corrigido e a `SMCLIENT.DLL`.
+
+Extraia o pacote completo em uma pasta local e execute o `sqlmon.exe` sempre como administrador.
 
 Utilize essa versão quando houver erro de **Access Violation** no SQLMon ao capturar SQLs grandes.
 
 ---
+
 
 ## SDE
 
