@@ -22,6 +22,7 @@ Documentação dos sistemas Senior: funcionalidades dos produtos, procedimentos 
 ## Índice
 - [ERP](#erp)
   - [Erros e Situações](#erros-e-situações)
+- [SQLMon](#sqlmon)
 - [SDE](#sde)
 - [WMS Silt](#wms-silt)
   - [Procedimentos](#procedimentos-wms)
@@ -78,6 +79,7 @@ se ((VComOperacao = "CONSISTINDO") e (VComNumPfa = 0)) {
     Mensagem(Erro, aMsg);
 }
 ```
+
 Obs: Na versão [5.10.4.75](https://documentacao.senior.com.br/gestaoempresarialerp/notasdaversao/#5-10-4.htm#813105) a Senior reporta a correção desse comportamento. Ainda assim, mantenha o identificador de regra ativo como salvaguarda.
 
 ---
@@ -162,6 +164,148 @@ END;
 Agora, abra o ERP e tente a transferência: a mensagem não deve mais aparecer, pois o valor de intwms retornará 'N' pela view criada (e não pela tabela original). Assim, você executa a transferência sem alterar a tabela e sem impactar outros usuários.
 
 Após concluir a transferência, desative a trigger e reabra o sistema para evitar que ações futuras em seu ERP usem o valor mascarado de intwms e impeçam a integração com o WMS por engano.
+
+---
+
+## SQLMon
+
+O **SQLMon** é uma ferramenta utilizada para capturar e visualizar comandos SQL executados por aplicações Senior, auxiliando em análises técnicas, investigação de comportamento do sistema, validação de consultas e diagnóstico de problemas.
+
+A Senior disponibiliza o aplicativo SQLMon em sua base de conhecimento no artigo:  
+[TECNOLOGIA - SQLMon - Como obter e iniciar o uso do aplicativo SQLMon](https://suporte.senior.com.br/hc/pt-br/articles/7113170178324-TECNOLOGIA-SQLMon-Como-obter-e-iniciar-o-uso-do-aplicativo-SQLMon).
+
+> [!IMPORTANT]
+> A versão disponibilizada neste repositório é uma versão **patcheada** do `sqlmon.exe`, mantida neste projeto apenas como apoio técnico.  
+> Ela não é uma versão oficial da Senior Sistemas.
+
+> [!WARNING]
+> Execute sempre o SQLMon como administrador.  
+> Caso contrário, a ferramenta pode não identificar corretamente a sessão do sistema Senior e pode não capturar os comandos SQL esperados.
+
+### Uso recomendado
+
+1. Baixe a versão corrigida do `sqlmon.exe` disponível neste repositório.
+2. Extraia os arquivos em uma pasta local, por exemplo:
+   ```text
+   C:\SQLmon
+   ```
+3. Execute o `sqlmon.exe` sempre como administrador:
+   ```text
+   Botão direito > Executar como administrador
+   ```
+4. Somente depois abra o sistema Senior que será monitorado.
+5. Verifique se o SQLMon identificou a sessão do sistema antes de iniciar a análise.
+
+### Correção aplicada na versão deste repositório
+
+Foi identificado um problema no `sqlmon.exe` original ao capturar e exibir SQLs muito grandes na grid do SQLMon.
+
+O erro pode ocorrer com mensagens semelhantes a:
+
+```text
+Access violation at address 00414788 in module 'sqlmon.exe'
+Read of address 20206C7C
+```
+
+ou:
+
+```text
+Access violation at address 0043CB82 in module 'sqlmon.exe'
+Read of address 20232639
+```
+
+O problema foi reproduzido ao capturar um SQL grande, semelhante a:
+
+```sql
+WITH allchrs (codchr, valchr) AS (
+    SELECT :codchr0, :valchr0 FROM dual UNION ALL
+    SELECT :codchr1, :valchr1 FROM dual UNION ALL
+    ...
+    SELECT :codchr255, :valchr255 FROM dual
+)
+SELECT
+    codchr,
+    valchr,
+    SUBSTR(NLSSORT(valchr), 1, 18)
+FROM
+    allchrs
+```
+
+### Causa técnica identificada
+
+Durante a análise com IDR/x32dbg, foi identificado que o `sqlmon.exe` possui uma rotina usada no desenho da coluna **SQL Statement** que copia o texto do SQL para um buffer fixo de `8192 bytes`.
+
+Trecho da alocação:
+
+```asm
+0046B67C        mov         eax,2000
+0046B681        call        @GetMem
+0046B686        mov         dword ptr [ebx+380],eax
+```
+
+`0x2000` em hexadecimal equivale a `8192` bytes.
+
+A rotina problemática era chamada durante o desenho da grid:
+
+```asm
+0046BDD2        call        0046BCA8
+```
+
+Essa rotina copiava caractere por caractere para o buffer, removendo caracteres de controle, mas sem validar o limite de tamanho. Quando o SQL ultrapassava o limite do buffer, o SQLMon sobrescrevia memória interna da aplicação, causando erros posteriores em menus, toolbar ou atalhos.
+
+### Patch aplicado
+
+A solução aplicada foi remover a chamada insegura da rotina `0046BCA8`.
+
+Alteração aplicada:
+
+```asm
+0046BDD2        call        0046BCA8
+```
+
+Para:
+
+```asm
+0046BDD2        nop
+0046BDD3        nop
+0046BDD4        nop
+0046BDD5        nop
+0046BDD6        nop
+```
+
+Com isso, a grid continua desenhando o texto do SQL, mas deixa de passar pela cópia intermediária para o buffer fixo de `8192 bytes`.
+
+### Efeito da correção
+
+Antes:
+
+```text
+SQL da célula
+↓
+cópia para buffer fixo de 8192 bytes
+↓
+desenho na grid
+```
+
+Depois:
+
+```text
+SQL da célula
+↓
+desenho direto na grid
+```
+
+Visualmente, a interface tende a permanecer igual. A diferença é interna: o SQLMon deixa de executar a cópia insegura que causava corrupção de memória em SQLs grandes.
+
+### Observação
+
+A rotina removida também eliminava caracteres de controle, como `TAB`, `LF` e `CR`, antes de desenhar o SQL na grid. Com o patch, alguns SQLs podem aparecer com formatação menos normalizada, mas o risco de corrupção de memória é reduzido.
+
+### Download da versão corrigida
+
+A versão patcheada do `sqlmon.exe` está disponível neste repositório para download.
+
+Utilize essa versão quando houver erro de **Access Violation** no SQLMon ao capturar SQLs grandes.
 
 ---
 
