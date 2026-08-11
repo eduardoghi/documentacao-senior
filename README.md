@@ -28,6 +28,7 @@ Documentação dos sistemas Senior: funcionalidades dos produtos, procedimentos 
   - [Procedimentos](#procedimentos-wms)
   - [Logs](#logs)
 - [Integrações](#integrações)
+  - [JSON Facade Adapter](#json-facade-adapter)
   - [ERP-WMS](#erp-wms)
 
 ---
@@ -800,6 +801,24 @@ VINCULOU O LOTE 9694688 NA SEPARAÇÃO ESPECIFICA PARA O IDNOTAFISCAL 258162
 ---
 
 ## Integrações
+
+### JSON Facade Adapter
+
+> [!IMPORTANT]
+> No **Gestão Empresarial | ERP**, o JSON Facade Adapter está disponível a partir da versão
+> **5.10.4.120 (17/07/2026)**.
+>
+> [Nota da versão, Senior](https://documentacao.senior.com.br/gestaoempresarialerp/notasdaversao/5-10-4/#MNTERP-48996)
+
+Permite consumir Web Services através de HTTP/JSON, utilizando a Bridge para realizar a conversão
+e execução do serviço.
+
+Atende serviços cujos parâmetros de entrada são escalares. Parâmetros estruturados do tipo `Set`
+não chegam ao serviço, e a resposta indica sucesso mesmo assim.
+
+📄 [Documentação do JSON Facade Adapter](integracoes/json-facade-adapter.md)
+
+---
 
 ### ERP-WMS
 #### Erros
