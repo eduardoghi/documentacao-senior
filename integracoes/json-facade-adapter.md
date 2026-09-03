@@ -17,7 +17,7 @@ O JSON Facade Adapter permite executar serviços G5/Senior usando HTTP com corpo
 > [!IMPORTANT]
 > O adapter atende corretamente parâmetros de **entrada escalares**. Estruturas aninhadas não são preservadas, e parâmetros do tipo `Set` podem ser [omitidos silenciosamente da requisição](#parâmetros-estruturados-na-entrada-não-chegam-ao-serviço), inclusive com a resposta indicando sucesso.
 >
-> A **saída** não tem essa restrição: respostas com estrutura profunda são convertidas corretamente.
+> A **saída** não tem essa restrição. Respostas com estrutura profunda são convertidas corretamente.
 
 Endpoint:
 
@@ -60,7 +60,7 @@ Authorization: Basic ...
 >
 > Um valor inválido é reclamado. `"execMode": "asyncc"` retorna `BAD_REQUEST` com a causa descrita na mensagem.
 >
-> Já um **nome** de campo grafado errado não é reclamado, porque propriedades desconhecidas na raiz do JSON são descartadas em silêncio. Confirmado em teste: `"exceMode": "async"` executa em modo `sync`, já que o `execMode` correto ficou ausente e assumiu o padrão.
+> Já um **nome** de campo grafado errado não é reclamado, porque propriedades desconhecidas na raiz do JSON são descartadas em silêncio. Confirmado em teste, `"exceMode": "async"` executa em modo `sync`, já que o `execMode` correto ficou ausente e assumiu o padrão.
 >
 > Confira a grafia dos nomes dos cinco campos, e não apenas os valores. Um erro ali não gera erro nenhum, só comportamento diferente do esperado.
 
@@ -101,7 +101,7 @@ Informar as duas coisas ao mesmo tempo, com `service` usando `@` e `port` repeti
 
 Se os dois indicarem operações **diferentes**, prevalece o que estiver em `port`.
 
-Confirmado em teste: com `FazConta3` e `FazConta` sendo operações distintas, a requisição abaixo executou o **`FazConta`**, indicado em `port`, e ignorou o `FazConta3` embutido em `service`:
+Confirmado em teste, com `FazConta3` e `FazConta` sendo operações distintas, a requisição abaixo executou o **`FazConta`**, indicado em `port`, e ignorou o `FazConta3` embutido em `service`:
 
 ```json
 {
@@ -115,7 +115,7 @@ Confirmado em teste: com `FazConta3` e `FazConta` sendo operações distintas, a
 }
 ```
 
-O motivo é a ordem em que os campos são aplicados: a operação vinda do `@` é gravada primeiro e depois sobrescrita por `port`. É também o que faz a forma separada (`service` sem `@` mais `port`) funcionar.
+O motivo é a ordem em que os campos são aplicados, com a operação vinda do `@` gravada primeiro e depois sobrescrita por `port`. É também o que faz a forma separada (`service` sem `@` mais `port`) funcionar.
 
 > [!WARNING]
 > Ainda que o comportamento seja previsível, evite informar operações diferentes nos dois campos. A requisição fica ambígua para quem lê e um erro de digitação no `@` passa despercebido, já que o `port` corrige silenciosamente.
@@ -135,7 +135,7 @@ Pode ser omitido. A requisição abaixo, sem `execMode`, executou normalmente em
 }
 ```
 
-Omitir o campo é diferente de enviá-lo com valor inválido: um valor fora da lista aceita retorna erro de validação, descrito em [Erros HTTP](#erros-http).
+Omitir o campo é diferente de enviá-lo com valor inválido. Um valor fora da lista aceita retorna erro de validação, descrito em [Erros HTTP](#erros-http).
 
 ## Autenticação
 
@@ -155,7 +155,7 @@ Detalhes observados na implementação:
 
 - No `Basic`, o conteúdo é decodificado de Base64 e separado no **primeiro** `:`. Portanto a senha pode conter `:` sem escape. Por exemplo, `usuario:minha:senha:123` resulta em usuário `usuario` e senha `minha:senha:123`.
 - O usuário não pode ser vazio. A senha não passa por validação equivalente nesse ponto.
-- Header ausente, ou com um esquema que não seja um dos quatro acima, **não é rejeitado de imediato**: o processamento segue com credenciais vazias e a falha ocorre depois.
+- Header ausente, ou com um esquema que não seja um dos quatro acima, **não é rejeitado de imediato**. O processamento segue com credenciais vazias e a falha ocorre depois.
 
 Para Basic Auth, o `curl` monta o header automaticamente a partir de:
 
@@ -207,7 +207,7 @@ O adapter não expõe campo para escolher a versão de criptografia. Ela é defi
 | `Bearer` | `3` | Usuário vazio, token da Plataforma Senior no lugar da senha | Não, apenas entre sistemas Senior |
 | `Trusted` | `999` | Usuário vazio, token no lugar da senha | Não, uso interno para chamadas de métodos agendados |
 
-Para sistemas terceiros, portanto, **`Encryption` é a única alternativa documentada ao texto aberto**. O `Bearer` gera a versão `3`, reservada pela Senior à integração entre sistemas próprios, e o `Trusted` é descrito como mecanismo interno para chamadas de métodos agendados. O valor `999` do `Trusted` não consta na documentação: foi identificado apenas na implementação analisada.
+Para sistemas terceiros, portanto, **`Encryption` é a única alternativa documentada ao texto aberto**. O `Bearer` gera a versão `3`, reservada pela Senior à integração entre sistemas próprios, e o `Trusted` é descrito como mecanismo interno para chamadas de métodos agendados. O valor `999` do `Trusted` não consta na documentação e foi identificado apenas na implementação analisada.
 
 Referência: [Autenticação via Headers em Web Services](https://documentacao.senior.com.br/tecnologia/5.10.4/integracoes-com-outros-sistemas/web-services/autentica%C3%A7%C3%A3o-via-headers-em-web-services.htm)
 
@@ -220,7 +220,7 @@ DD/MM/YYYY HH:MM:SS|<nome do usuário>
 > [!NOTE]
 > O `Encryption` não foi testado em execução neste levantamento.
 >
-> A Senior alerta que o token tem tempo de expiração e que, nas execuções internas entre sistemas Senior, o mecanismo **só funciona em modo síncrono**: nos demais modos a execução falha com "Credenciais inválidas". Para sistemas terceiros, a administração do tempo de expiração é responsabilidade da integração.
+> A Senior alerta que o token tem tempo de expiração e que, nas execuções internas entre sistemas Senior, o mecanismo **só funciona em modo síncrono**. Nos demais modos a execução falha com "Credenciais inválidas". Para sistemas terceiros, a administração do tempo de expiração é responsabilidade da integração.
 >
 > Valide esse comportamento antes de usar `Encryption` com `execMode: async`.
 
@@ -346,14 +346,14 @@ Senha incorreta:
 ```
 
 > [!IMPORTANT]
-> As duas respostas vêm com `HTTP 200`. Uma integração que trate autenticação apenas pelo status HTTP **nunca vai perceber que a credencial está errada**: vai receber `200`, ler o parâmetro de saída com o valor padrão do tipo e seguir como se tivesse dado certo.
+> As duas respostas vêm com `HTTP 200`. Uma integração que trate autenticação apenas pelo status HTTP **nunca vai perceber que a credencial está errada**. Recebe `200`, lê o parâmetro de saída com o valor padrão do tipo e segue como se tivesse dado certo.
 
 Repare que a mensagem é diferente nos dois casos. Usuário inexistente responde `Credenciais inválidas.`, enquanto senha incorreta responde `Credenciais inválidas/desabilitadas/expiradas.`. Nos testes desta versão, portanto, foi possível distinguir os dois pela mensagem retornada.
 
 Observações dos testes:
 
-- `erroExecucao` é uma **string**, não um objeto. Não há código de erro separado: a mensagem do serviço vem concatenada ao prefixo `Ocorreu um erro ao executar o serviço "...":`.
-- O nome do serviço dentro do prefixo não foi preenchido: veio literalmente como `" "`, um único espaço entre aspas, em todos os cenários testados. Não use esse trecho para identificar a origem do erro.
+- `erroExecucao` é uma **string**, não um objeto, e não há código de erro separado. A mensagem do serviço vem concatenada ao prefixo `Ocorreu um erro ao executar o serviço "...":`.
+- O nome do serviço dentro do prefixo não foi preenchido. Em todos os cenários testados ele veio literalmente como `" "`, um único espaço entre aspas. Não use esse trecho para identificar a origem do erro.
 - A mensagem não é construída pelo adapter. O Bridge recebe esse conteúdo da camada de execução e o propaga para `erroExecucao`, sem preencher nem corrigir o nome do prefixo. A origem exata do texto não foi localizada na implementação analisada, então não trate esse formato como contrato estável nem faça leitura programática dele.
 - Os parâmetros de saída retornam o **valor padrão do tipo**, não `null`. No exemplo, `resultado` veio `0` mesmo com o serviço em erro. Ou seja, `0` não significa sucesso.
 - Erro levantado pela regra e erro de execução chegam no **mesmo formato**, ambos com `HTTP 200`. Não é possível distinguir a natureza do erro apenas pelo campo.
@@ -368,7 +368,7 @@ Por isso, em chamadas síncronas, valide sempre, nesta ordem:
 
 Na **entrada**, a caixa não importa. O nome enviado é comparado ao do contrato do serviço ignorando maiúsculas e minúsculas, então `codemp`, `CODEMP` e `codEmp` casam todos com o mesmo parâmetro.
 
-Confirmado em teste: um serviço que declara `Number` como parâmetro de entrada respondeu normalmente ao receber `NUMBER`, com o cálculo correto. Se o nome tivesse sido descartado, o parâmetro de saída teria voltado com o valor padrão do tipo.
+Confirmado em teste, um serviço que declara `Number` como parâmetro de entrada respondeu normalmente ao receber `NUMBER`, com o cálculo correto. Se o nome tivesse sido descartado, o parâmetro de saída teria voltado com o valor padrão do tipo.
 
 O elemento da requisição é reconstruído a partir do nome do contrato, com a normalização de nomes aplicada pelo Bridge, e não necessariamente com a grafia original.
 
@@ -400,9 +400,9 @@ Ou seja, um nome que já começa em minúscula chega intacto. Só os que começa
 
 O par `MeuResultadOO` veio de um serviço criado especificamente para isolar essa regra. As maiúsculas consecutivas no fim do nome descartam a hipótese de conversão para minúsculo integral, que produziria `meuresultadoo`.
 
-`MensagemRetorno` e `TipoRetorno` confirmam o mesmo em serviço padrão da Senior: aparecem com essa grafia no registro binário da `R960PAR` e chegam ao JSON com a inicial minúscula e o resto preservado, mostrando os dois lados da conversão.
+`MensagemRetorno` e `TipoRetorno` confirmam o mesmo em serviço padrão da Senior. Aparecem com essa grafia no registro binário da `R960PAR` e chegam ao JSON com a inicial minúscula e o resto preservado, mostrando os dois lados da conversão.
 
-Na prática: na entrada não se preocupe com a caixa, apenas com a grafia exata do nome. Na resposta, considere que a inicial pode ter mudado.
+Na prática, na entrada não se preocupe com a caixa, apenas com a grafia exata do nome. Na resposta, considere que a inicial pode ter mudado.
 
 ## Parâmetros
 
@@ -432,7 +432,7 @@ resulta na estrutura abaixo, capturada da requisição efetivamente gravada pelo
 Dois pontos importantes nessa estrutura:
 
 - O elemento é `<params>`, dentro de `<request>`. No envelope SOAP completo existe também um `<parameters>` em nível externo, que carrega esse documento inteiro. São camadas diferentes.
-- O nome do parâmetro teve a **inicial convertida para minúscula**: `Number` virou `<number>`. A resolução funcionou mesmo assim. Veja [Maiúsculas e minúsculas nos campos](#maiúsculas-e-minúsculas-nos-campos).
+- O nome do parâmetro teve a **inicial convertida para minúscula** e `Number` virou `<number>`. A resolução funcionou mesmo assim. Veja [Maiúsculas e minúsculas nos campos](#maiúsculas-e-minúsculas-nos-campos).
 
 Por isso, utilize os mesmos nomes definidos nos parâmetros do serviço.
 
@@ -453,9 +453,9 @@ Para um serviço sem parâmetros de entrada, envie:
 >
 > Não use este endpoint para serviços cuja entrada exija estrutura aninhada.
 
-Um objeto ou array enviado para um parâmetro declarado como `Set` não vira estrutura aninhada, e também não chega como texto achatado: ele é **descartado por completo**, sem gerar erro.
+Um objeto ou array enviado para um parâmetro declarado como `Set` não vira estrutura aninhada, e também não chega como texto achatado. Ele é **descartado por completo**, sem gerar erro.
 
-Foram tentadas quatro formas de enviar um parâmetro `Set`, e nenhuma funcionou: objeto aninhado, array, caminho achatado com ponto, e estrutura montada com os nomes exatos do contrato publicado. Para esses parâmetros, use o endpoint SOAP.
+Nenhuma das quatro formas testadas funcionou, seja objeto aninhado, array, caminho achatado com ponto ou estrutura montada com os nomes exatos do contrato publicado. Para esses parâmetros, use o endpoint SOAP.
 
 ### Como isso foi verificado
 
@@ -493,7 +493,7 @@ A requisição gravada confirma o efeito. O elemento de parâmetros veio **vazio
 
 ### Todas as formas testadas
 
-Objeto e array se comportam da mesma maneira: a requisição é aceita, executa, e o parâmetro não chega ao serviço.
+Objeto e array se comportam da mesma maneira. A requisição é aceita, executa, e o parâmetro não chega ao serviço.
 
 | Valor em `parameters` | Comportamento |
 |---|---|
@@ -508,7 +508,7 @@ Também não funciona achatar o caminho com ponto, no formato que a própria doc
 
 Os três escalares passaram. As duas chaves com ponto foram descartadas, e sequer viraram elementos com o nome literal.
 
-O descarte acontece **chave por chave**, e independe da posição: repetindo o teste com a chave inválida em primeiro lugar, os escalares seguintes continuaram sendo transmitidos. Uma chave não reconhecida some sozinha, sem afetar as demais e sem gerar aviso.
+O descarte acontece **chave por chave**, e independe da posição. Repetindo o teste com a chave inválida em primeiro lugar, os escalares seguintes continuaram sendo transmitidos. Uma chave não reconhecida some sozinha, sem afetar as demais e sem gerar aviso.
 
 O mesmo vale para valor objeto e para valor array. Enviando `"consulta"` das duas formas, ao lado dos três escalares, a requisição gravada saiu idêntica nos dois casos:
 
@@ -553,7 +553,7 @@ Nenhum título foi retornado, e o `tipoRetorno` igual a `1` significa "Processad
 
 ### Como detectar
 
-Não existe sinal do descarte na resposta. E no fluxo analisado ele também **não gera registro no servidor**: o trecho que omite o parâmetro vazio não emite exceção, warning nem debug, e nos testes não apareceu nada correspondente no `server.log`.
+Não existe sinal do descarte na resposta. E no fluxo analisado ele também **não gera registro no servidor**. O trecho que omite o parâmetro vazio não emite exceção, warning nem debug, e nos testes não apareceu nada correspondente no `server.log`.
 
 Restam duas formas de perceber o problema, ambas do lado de quem integra:
 
@@ -562,7 +562,7 @@ Restam duas formas de perceber o problema, ambas do lado de quem integra:
 
 
 > [!NOTE]
-> O problema é de **entrada**. A conversão da resposta funciona corretamente, inclusive com estruturas profundas: veja [Resposta com estrutura complexa](#resposta-com-estrutura-complexa).
+> O problema é de **entrada**. A conversão da resposta funciona corretamente, inclusive com estruturas profundas. Veja [Resposta com estrutura complexa](#resposta-com-estrutura-complexa).
 
 ## Resposta com estrutura complexa
 
@@ -615,7 +615,7 @@ A resposta, com os valores substituídos por dados de exemplo e reduzida para mo
 }
 ```
 
-Os tipos são preservados: números chegam como número, `null` como `null`, e datas como texto no formato `DD/MM/YYYY`.
+Os tipos são preservados. Números chegam como número, `null` como `null`, e datas como texto no formato `DD/MM/YYYY`.
 
 Serviços padrão da Senior costumam trazer também `mensagemRetorno` e `tipoRetorno` ao lado do `erroExecucao`.
 
@@ -632,10 +632,10 @@ No contrato SOAP, `itens` e `camposUsuarioOrcamento` são ambos coleções. Na r
 
 A diferença não está no contrato, e sim na quantidade de registros retornados naquela chamada. Em SOAP, um elemento repetido uma vez e repetido três vezes são a mesma estrutura. Na conversão para JSON deixam de ser.
 
-Isso foi confirmado com o **mesmo campo, no mesmo serviço**: consultando um orçamento com um único item, `itens` veio como objeto; consultando outro orçamento com vários itens, `itens` veio como array. Nada mudou na chamada além do registro consultado.
+Isso foi confirmado com o **mesmo campo, no mesmo serviço**. Consultando um orçamento com um único item, `itens` veio como objeto. Consultando outro orçamento com vários itens, veio como array. Nada mudou na chamada além do registro consultado.
 
 > [!WARNING]
-> Uma integração que percorra `orcamento.itens` como lista funciona enquanto o orçamento tiver vários itens e **quebra quando tiver apenas um**. O inverso também vale: código que trate `itens` como objeto quebra assim que vier o segundo item.
+> Uma integração que percorra `orcamento.itens` como lista funciona enquanto o orçamento tiver vários itens e **quebra quando tiver apenas um**. O inverso também vale, e código que trate `itens` como objeto quebra assim que vier o segundo item.
 >
 > Antes de percorrer qualquer coleção da resposta, verifique se o valor é array ou objeto e normalize. Não confie no que apareceu no teste, porque a forma depende dos dados daquele registro.
 
@@ -657,7 +657,7 @@ O campo é opcional. Quando omitido, o adapter assume `sync`, que é o modo em q
 }
 ```
 
-O Web Service em si possui um quarto modo, o **Local**, que processa na mesma instância da aplicação, dentro do próprio sistema, sem passar pelo Middleware. Ele não está disponível no adapter: a mensagem de erro de validação cita apenas "Sincrono, Assincrono ou agendado".
+O Web Service em si possui um quarto modo, o **Local**, que processa na mesma instância da aplicação, dentro do próprio sistema, sem passar pelo Middleware. Ele não está disponível no adapter. A mensagem de erro de validação cita apenas "Sincrono, Assincrono ou agendado".
 
 > [!NOTE]
 > A mensagem de erro do adapter cita os modos como "Sincrono, Assincrono ou agendado", mas o valor aceito no JSON é o identificador em minúsculo, como `sync` e `async`.
@@ -706,7 +706,7 @@ A saída **não é XML**. É um formato binário próprio, em que os nomes dos c
 > [!NOTE]
 > Recuperar o resultado de uma chamada assíncrona pela tabela exige interpretar esse formato binário. Não basta ler o BLOB como texto.
 >
-> Repare também que ali os nomes vêm capitalizados, como `MensagemRetorno`. É a mesma diferença descrita em [Maiúsculas e minúsculas nos campos](#maiúsculas-e-minúsculas-nos-campos): a resposta JSON entrega `mensagemRetorno`, com a inicial em minúscula.
+> Repare também que ali os nomes vêm capitalizados, como `MensagemRetorno`. É a mesma diferença descrita em [Maiúsculas e minúsculas nos campos](#maiúsculas-e-minúsculas-nos-campos). A resposta JSON entrega `mensagemRetorno`, com a inicial em minúscula.
 
 Ambas as tabelas são consultáveis pela Consulta de Requisições.
 
@@ -719,7 +719,7 @@ No modelo de execução agendada da Senior, a solicitação é armazenada no Wil
 
 O agendamento exige metadados próprios, como operação, periodicidade, intervalo, data e hora iniciais. Eles estão especificados pela Senior em [Tipos de execução](https://documentacao.senior.com.br/tecnologia/5.10.4/integracoes-com-outros-sistemas/web-services/tipos_execucao.htm), e ficam **ao lado** de `parameters`, não dentro dele.
 
-A estrutura da requisição JSON não possui campo para nenhum deles: só existem `module`, `service`, `port`, `execMode` e `parameters`.
+A estrutura da requisição JSON não possui campo para nenhum deles. Só existem `module`, `service`, `port`, `execMode` e `parameters`.
 
 Foram testadas as duas formas possíveis de tentar enviá-los, usando exatamente os nomes documentados acima, e ambas deram o mesmo resultado:
 
@@ -790,7 +790,7 @@ Existe também a porta `cancel`, que remove um agendamento a partir do seu ident
 > [!IMPORTANT]
 > Credencial inválida **não** aparece nesta tabela. Nos cenários testados, usuário ou senha errados retornaram `HTTP 200`, com a falha dentro de [`result.erroExecucao`](#erroexecucao), e não houve resposta `401`.
 
-Esta tabela cobre falhas de **transporte e validação**, antes ou fora da execução da regra. Erro do próprio serviço não aparece aqui: retorna `HTTP 200` com [`result.erroExecucao`](#erroexecucao) preenchido.
+Esta tabela cobre falhas de **transporte e validação**, antes ou fora da execução da regra. Erro do próprio serviço não aparece aqui e retorna `HTTP 200` com [`result.erroExecucao`](#erroexecucao) preenchido.
 
 > [!NOTE]
 > Header `Authorization` malformado, como Base64 inválido no `Basic`, não foi testado. A leitura da implementação sugere que ele cai no tratamento genérico de erro, e não no de autorização.
@@ -812,7 +812,7 @@ Quando a falha é do adapter, e não do serviço, a resposta **não traz o nó `
 }
 ```
 
-Nome de serviço errado **não** é tratado como erro de validação da requisição: a validação inicial apenas confere se o campo foi informado, e a falha só acontece depois, ao resolver o serviço.
+Nome de serviço errado **não** é tratado como erro de validação da requisição. A validação inicial apenas confere se o campo foi informado, e a falha só acontece depois, ao resolver o serviço.
 
 **Campo com valor inválido**, usando `"execMode": "xyz"`:
 
@@ -825,7 +825,7 @@ Nome de serviço errado **não** é tratado como erro de validação da requisi�
 }
 ```
 
-Note a diferença: em `BAD_REQUEST` o campo `message` traz a causa real, enquanto em `INTERNAL_ERROR` vem apenas `"Internal server error."`, sem detalhe. Para diagnosticar, use o `internalCode`, não o texto de `message`.
+Em `BAD_REQUEST` o campo `message` traz a causa real, enquanto em `INTERNAL_ERROR` vem apenas `"Internal server error."`, sem detalhe. Para diagnosticar, use o `internalCode`, não o texto de `message`.
 
 ### Formatos de resposta
 
@@ -838,8 +838,8 @@ São sete situações distintas, produzindo quatro estruturas de corpo. A integr
 | Credencial inválida | `200` | `result` como **objeto**, com o erro em `erroExecucao` |
 | Chamada aceita (`async`) | `200` | `result` como a **string** `"ok"`, sem dados do serviço |
 | Listagem de agendamentos | `200` | `result` como **string contendo XML**, sem conversão para JSON |
-| Adapter falhou | `400` ou `500` | **sem `result`**; traz `message`, `path`, `timestamp` e `internalCode` |
-| Falha antes do adapter, como rota inexistente ou corpo malformado | erro | **sem `result`**; traz apenas `mensagem` e `error` |
+| Adapter falhou | `400` ou `500` | **sem `result`**, com `message`, `path`, `timestamp` e `internalCode` |
+| Falha antes do adapter, como rota inexistente ou corpo malformado | erro | **sem `result`**, com apenas `mensagem` e `error` |
 
 > [!WARNING]
 > O nó `result` muda de tipo conforme o caso. Ler `result.erroExecucao` diretamente só é válido quando `result` é um **objeto**, o que acontece nas três primeiras linhas da tabela. No `async` e na listagem de agendamentos ele é uma string, e nos erros do adapter o nó nem existe.

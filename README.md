@@ -1,5 +1,5 @@
 # documentacao-senior
-Documentação dos sistemas Senior: funcionalidades dos produtos, procedimentos e resolução de problemas.
+Documentação dos sistemas Senior, com funcionalidades dos produtos, procedimentos e resolução de problemas.
 
 > [!IMPORTANT]
 > **Aviso legal**  
@@ -99,18 +99,21 @@ Solução: se você tem certeza do que está fazendo e tem acesso ao banco como 
 
 O sistema, para exibir essa mensagem, verifica o valor da coluna e205dep.intwms do depósito. Assim, é possível forçar a transferência sem alterar esse valor na tabela original, usando um schema auxiliar:
 
-1 -  Criar schema auxiliar no banco.
+1. Criar schema auxiliar no banco.
+
 ```sqlpl
 CREATE USER maskvalor IDENTIFIED BY "Senha123123";
 ```
 
-2 - Conceder permissões para o novo schema logar, criar views e fazer SELECT na tabela e205dep.
+2. Conceder permissões para o novo schema logar, criar views e fazer SELECT na tabela e205dep.
+
 ```sqlpl
 GRANT CREATE SESSION, CREATE VIEW TO maskvalor;
 GRANT SELECT ON schemaerp.e205dep TO maskvalor;
 ```
 
-3 - Criar uma VIEW no schema auxiliar que lê e205dep, mas retorna 'N' em intwms conforme a condição.
+3. Criar uma VIEW no schema auxiliar que lê e205dep, mas retorna 'N' em intwms conforme a condição.
+
 ```sqlpl
 CREATE OR REPLACE
 VIEW maskvalor.e205dep AS
@@ -126,7 +129,8 @@ FROM
     schemaerp.e205dep;
 ```
 
-4 - Criar sinônimos no schema auxiliar para os objetos do schema do ERP, exceto e205dep.
+4. Criar sinônimos no schema auxiliar para os objetos do schema do ERP, exceto e205dep.
+
 ```sqlpl
 BEGIN
     FOR r IN (
@@ -151,7 +155,8 @@ BEGIN
 END;
 ```
 
-5 - Criar uma trigger para, ao logar no banco a partir do seu computador, mudar o CURRENT_SCHEMA para o schema auxiliar.
+5. Criar uma trigger para, ao logar no banco a partir do seu computador, mudar o CURRENT_SCHEMA para o schema auxiliar.
+
 ```sqlpl
 CREATE OR REPLACE TRIGGER trg_maskvalor_current_schema
 AFTER LOGON ON SCHEMA
@@ -162,7 +167,7 @@ BEGIN
 END;
 ```
 
-Agora, abra o ERP e tente a transferência: a mensagem não deve mais aparecer, pois o valor de intwms retornará 'N' pela view criada (e não pela tabela original). Assim, você executa a transferência sem alterar a tabela e sem impactar outros usuários.
+Agora abra o ERP e tente a transferência. A mensagem não deve mais aparecer, porque o valor de intwms retorna 'N' pela view criada, e não pela tabela original. Assim, você executa a transferência sem alterar a tabela e sem impactar outros usuários.
 
 Após concluir a transferência, desative a trigger e reabra o sistema para evitar que ações futuras em seu ERP usem o valor mascarado de intwms e impeçam a integração com o WMS por engano.
 
@@ -299,7 +304,7 @@ SQL da célula
 desenho direto na grid
 ```
 
-Visualmente, a interface tende a permanecer igual. A diferença é interna: o SQLMon deixa de executar a cópia insegura que causava corrupção de memória em SQLs grandes.
+Visualmente, a interface tende a permanecer igual. Internamente, o SQLMon deixa de executar a cópia insegura que causava corrupção de memória em SQLs grandes.
 
 ### Observação
 
@@ -502,8 +507,8 @@ Ainda assim, para consultas (*SELECT*) e análises, seguem algumas tabelas e col
 * `seqrec`: Sequência do recebedor
 * `seqout`: Sequência do outro tomador
 * `seqenv`: Sequência do município de envio do CT-e (município de onde o CT-e foi transmitido)
-* `seqini`: Sequência do município do início da prestação - tag XML: `<cMunIni>`
-* `seqter`: Sequência do município do término da prestação - tag XML: `<cMunFim>`  
+* `seqini`: Sequência do município do início da prestação (tag XML: `<cMunIni>`)
+* `seqter`: Sequência do município do término da prestação (tag XML: `<cMunFim>`)  
 * `seqicm`: Sequência do ICMS
 * `seqend`: Sequência do endereço
 * `sitcte`: Situação do documento
@@ -521,7 +526,7 @@ Ainda assim, para consultas (*SELECT*) e análises, seguem algumas tabelas e col
   * `11`: Aguardando saída em contingência
 * `daterp`: Data/hora de retorno do status ao ERP
 * `sitimp`: ?
-* `codnum`: Código numérico do CT-e que compõe a chave de acesso - tag xml: `<cCT>`
+* `codnum`: Código numérico do CT-e que compõe a chave de acesso (tag XML: `<cCT>`)
 * `codcfp`: CFOP
 * `natope`: Natureza da operação
 * `forpag`: Forma de pagamento
@@ -533,7 +538,7 @@ Ainda assim, para consultas (*SELECT*) e análises, seguem algumas tabelas e col
 * `numcte`: Número do CT-e
 * `datemi`: Data/hora de emissão
 * `tipimp`: ?
-* `tipemi`: Tipo de emissão do CT-e - tag XML: `<tpEmis>`
+* `tipemi`: Tipo de emissão do CT-e (tag XML: `<tpEmis>`)
   * `1`: Normal
   * `4`: EPEC pela SVC
   * `5`: Contingência FS-DA
@@ -549,7 +554,7 @@ Ainda assim, para consultas (*SELECT*) e análises, seguem algumas tabelas e col
   * `2`: CT-e de Anulação de Valores
   * `3`: CT-e Substituto
 * `tipapl`: ?
-* `chvref`: Chave de acesso do CT-e referenciado (CT-e Complementar; tag XML: `<infCteComp><chave>`).
+* `chvref`: Chave de acesso do CT-e referenciado (CT-e Complementar, tag XML: `<infCteComp><chave>`).
 * `tipmod`: Modalidade de transporte
   * `1`: Rodoviário
   * `2`: Aéreo
@@ -571,22 +576,22 @@ Ainda assim, para consultas (*SELECT*) e análises, seguem algumas tabelas e col
   * `3`: Destinatário
 * `datcon`: Data/hora contingência
 * `juscon`: Justificativa contingência
-* `valpre`: Valor total do serviço prestado - tag xml: `<vTPrest>`
-* `valrec`: Valor a receber/recebido pelo serviço - tag xml: `<vRec>`
+* `valpre`: Valor total do serviço prestado (tag XML: `<vTPrest>`)
+* `valrec`: Valor a receber/recebido pelo serviço (tag XML: `<vRec>`)
 * `chvcte`: Chave de acesso (SDE)
 * `inffis`: Informações adicionais de interesse do Fisco: tag XML: `<infAdFisco>`
-* `vercte`: Versão do layout do CT-e - tag XML: `<verCTe>`
+* `vercte`: Versão do layout do CT-e (tag XML: `<verCTe>`)
 * `datrec`: Data/hora recebimento na SEFAZ
 * `numpro`: Protocolo de autorização de uso
-* `digval`: Digest value - tag XML: `<DigestValue>`
+* `digval`: Digest value (tag XML: `<DigestValue>`)
 * `inssuf`: Inscrição do destinatário na SUFRAMA
 * `tippro`: Tipo do processamento
   * `E`: Emissão
   * `R`: Recebimento
 * `chverp`: Chave de acesso (ERP)
 * `chvctg`: ?
-* `verpse`: Versão do aplicativo da SEFAZ - tag XML: `<verAlic>`
-* `valimp`: Valor dos impostos - tag XML: `<vTotTrib>`
+* `verpse`: Versão do aplicativo da SEFAZ (tag XML: `<verAlic>`)
+* `valimp`: Valor dos impostos (tag XML: `<vTotTrib>`)
 * `loccnp`: ?
 * `loccpf`: ?
 * `locnom`: ?
@@ -596,7 +601,7 @@ Ainda assim, para consultas (*SELECT*) e análises, seguem algumas tabelas e col
   * `2`: Retornado
   * `3`: Erro no retorno
   * `4`: Desativado
-* `verapl`: Versão do aplicativo/processo emissor - tag xml: `<verProc>`
+* `verapl`: Versão do aplicativo/processo emissor (tag XML: `<verProc>`)
 * `cameml`: Caminho do arquivo EML
 * `uftbca`: ?
 * `uftali`: ?
@@ -656,7 +661,7 @@ Ainda assim, para consultas (*SELECT*) e análises, seguem algumas tabelas e col
 * `sigest`: Sigla do estado
 * `nomest`: Nome do estado
 * `utcest`: Fuso horário (UTC)
-* `utcver`: Fuso horário (UTC) - horário de verão
+* `utcver`: Fuso horário (UTC) no horário de verão
 
 ---
 
@@ -816,7 +821,7 @@ e execução do serviço.
 Atende serviços cujos parâmetros de entrada são escalares. Parâmetros estruturados do tipo `Set`
 não chegam ao serviço, e a resposta indica sucesso mesmo assim.
 
-📄 [Documentação do JSON Facade Adapter](integracoes/json-facade-adapter.md)
+[Documentação do JSON Facade Adapter](integracoes/json-facade-adapter.md)
 
 ---
 
@@ -835,9 +840,9 @@ Erro:	Erro ao processar cancelamento, identificador único: "31aac8d7-8820-47ae-
 <img width="1717" height="440" alt="image" src="https://github.com/user-attachments/assets/5430f49c-c7df-494c-a460-f020d21a8c4e" />
 Motivo: O usuário de integração não possui as permissões necessárias para fazer o cancelamento no ERP.
 
-Solução: No ERP altere o valor para Sim nas linhas "Alterar Situação Pedido", "Alterar Situação NF Saída", "Cancelar NF-e Exp", "Reabilitar NF Saída Emitida" e "Cancelar NF Saída" para o usuário de integração na tela "Parametros de Usuário para Vendas" (F099UVE - Cadastros -> Usuários -> Parametros por Gestão -> Vendas, Faturamento e Transporte)
+Solução: No ERP altere o valor para Sim nas linhas "Alterar Situação Pedido", "Alterar Situação NF Saída", "Cancelar NF-e Exp", "Reabilitar NF Saída Emitida" e "Cancelar NF Saída" para o usuário de integração na tela "Parametros de Usuário para Vendas" (F099UVE, em Cadastros → Usuários → Parametros por Gestão → Vendas, Faturamento e Transporte).
 
-No Senior-X você pode ver qual é o usuário que faz a integração em Tecnologia -> Configuração -> Por Tenant -> erp_isl -> int_integrador_bifrost -> Editar -> aba Sistema
+No Senior-X você pode ver qual é o usuário que faz a integração em Tecnologia → Configuração → Por Tenant → erp_isl → int_integrador_bifrost → Editar → aba Sistema
 <img width="1715" height="666" alt="image" src="https://github.com/user-attachments/assets/da52bdbd-f364-4311-978d-980a4df2a39a" />
 
 <img width="950" height="576" alt="image" src="https://github.com/user-attachments/assets/0e8b6559-8f70-41a4-a1be-e1f8c76d1561" />
