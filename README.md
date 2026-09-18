@@ -30,6 +30,8 @@ Documentação dos sistemas Senior, com funcionalidades dos produtos, procedimen
 - [Integrações](#integrações)
   - [JSON Facade Adapter](#json-facade-adapter)
   - [ERP-WMS](#erp-wms)
+- [Linux](#linux)
+  - [ERP com Wine](#erp-com-wine)
 
 ---
 
@@ -846,3 +848,14 @@ No Senior-X você pode ver qual é o usuário que faz a integração em Tecnolog
 <img width="1715" height="666" alt="image" src="https://github.com/user-attachments/assets/da52bdbd-f364-4311-978d-980a4df2a39a" />
 
 <img width="950" height="576" alt="image" src="https://github.com/user-attachments/assets/0e8b6559-8f70-41a4-a1be-e1f8c76d1561" />
+
+---
+
+## Linux
+
+<a name="erp-com-wine"></a>
+### Senior Gestão Empresarial (ERP) no Linux com Wine
+
+Configuração validada para executar o ERP no Arch Linux com Wine, em sessão Wayland do KDE Plasma. Cobre prefixo dedicado, instalação da estação e do cliente Oracle 32 bits, fontes, compartilhamentos SMB com Kerberos, atalho no Plasma e os problemas encontrados com o `winex11.drv` e o `winewayland.drv`.
+
+[Documentação do ERP no Linux com Wine](linux/sapiens-wine.md)
