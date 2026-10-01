@@ -197,6 +197,27 @@ Para encerrar todos os processos Wine do prefixo:
 WINEPREFIX="$HOME/.local/share/wineprefixes/senior" wineserver -k
 ```
 
+## Locale regional (pt-BR)
+
+Configurar `Control Panel\International` no registro do prefixo (data, moeda, separador decimal etc., via `wine reg add` ou `winecfg`) não é suficiente para o `LocaleName` (o valor moderno, usado por `GetUserDefaultLocaleName`). O Wine recalcula esse valor a partir do `LANG`/`LC_ALL` do processo Unix que inicia o `wine`, ignorando o que está gravado no registro para esse campo específico.
+
+Confirme com:
+
+```bash
+WINEPREFIX="$HOME/.local/share/wineprefixes/senior" \
+    wine reg query "HKCU\Control Panel\International" /v LocaleName
+```
+
+Se a sessão gráfica não estiver com `LANG=pt_BR.UTF-8`, esse comando devolve `en-US` mesmo com o restante do registro já em pt-BR. O locale `pt_BR.utf8` precisa estar instalado no sistema (`locale -a`).
+
+A correção é passar `LANG`/`LC_ALL` no ambiente de quem lança o `wine`, por exemplo no `Exec` do `.desktop`:
+
+```ini
+Exec=env WINEPREFIX=/home/<usuario>/.local/share/wineprefixes/senior LANG=pt_BR.UTF-8 LC_ALL=pt_BR.UTF-8 wine /home/<usuario>/.local/share/wineprefixes/senior/drive_c/SeniorEstacao/Sapiens/sapiens.exe
+```
+
+Processos Wine já abertos antes dessa mudança mantêm o locale antigo em memória. Só reflete numa próxima abertura.
+
 ## Fontes e renderização
 
 Sem as fontes que normalmente existem no Windows, alguns componentes do ERP ficam visualmente diferentes. O `fontsmooth=rgb` habilita suavização semelhante ao ClearType.
@@ -315,7 +336,7 @@ Crie `~/.local/share/applications/senior-sapiens.desktop`:
 Type=Application
 Name=Senior Sapiens
 Comment=Senior Gestão Empresarial
-Exec=env WINEPREFIX=/home/<usuario>/.local/share/wineprefixes/senior wine /home/<usuario>/.local/share/wineprefixes/senior/drive_c/SeniorEstacao/Sapiens/sapiens.exe
+Exec=env WINEPREFIX=/home/<usuario>/.local/share/wineprefixes/senior LANG=pt_BR.UTF-8 LC_ALL=pt_BR.UTF-8 wine /home/<usuario>/.local/share/wineprefixes/senior/drive_c/SeniorEstacao/Sapiens/sapiens.exe
 Path=/home/<usuario>/.local/share/wineprefixes/senior/drive_c/SeniorEstacao/Sapiens
 Icon=/home/<usuario>/.local/share/icons/senior-sapiens.png
 StartupWMClass=sapiens.exe
@@ -325,6 +346,8 @@ StartupNotify=true
 ```
 
 Os caminhos ficam absolutos porque o `Exec` do `.desktop` não expande variáveis como `$HOME`.
+
+`LANG`/`LC_ALL` no `Exec` são o que faz o Wine reportar `pt-BR` como `LocaleName`, ver [Locale regional (pt-BR)](#locale-regional-pt-br).
 
 O `StartupWMClass` associa a janela criada pelo Wine ao atalho. Sem ele, o Plasma pode tratar o launcher fixado e a janela do ERP como aplicações diferentes, resultando em dois ícones na barra ou em uma janela que não agrupa com o atalho. O valor vem do `WM_CLASS` da janela, que o `wmctrl -lx` mostra como `sapiens.exe.sapiens.exe` e o `xprop` confirma:
 
