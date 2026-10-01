@@ -199,6 +199,22 @@ WINEPREFIX="$HOME/.local/share/wineprefixes/senior" wineserver -k
 
 ## Locale regional (pt-BR)
 
+Com o prefixo em `en-US`, o formato de data curta fica `M/d/yyyy`. Uma data como `01/10/2026`, digitada ou lida como 1º de outubro, é interpretada como 10 de janeiro. O `RtBase02.bpl` importa `GetThreadLocale`, `SetThreadLocale`, `GetUserDefaultLCID`, `GetLocaleInfoA`, `GetLocaleInfoW` e `GetDateFormatA`, e o `svcl02.bpl` importa `GetLocaleInfoA`. A conversão de data passa por essa cadeia:
+
+```text
+TSEdit / TSForm
+    ↓
+svcl02
+    ↓
+RtBase02 / SysUtils
+    ↓
+locale do Windows/Wine
+    ↓
+conversão da data
+```
+
+Esse foi o diagnóstico de uma data trocada chegando errada em `CheckDatEmi` num caso real (relatado como bug de `E020SNF`/`sa_mercado_faturamento` até a causa ser isolada aqui). Com o prefixo em `pt-BR` e `dd/MM/yyyy`, a mesma data é interpretada corretamente, sem precisar trocar nenhuma `.bpl`. As versões analisadas, `svcl02.bpl` e `RtBase02.bpl`, ambas `5.10.4.360` (`release_tec-5.10.4.2637`), confirmam que é configuração de ambiente, não bug de build.
+
 Configurar `Control Panel\International` no registro do prefixo (data, moeda, separador decimal etc., via `wine reg add` ou `winecfg`) não é suficiente para o `LocaleName` (o valor moderno, usado por `GetUserDefaultLocaleName`). O Wine recalcula esse valor a partir do `LANG`/`LC_ALL` do processo Unix que inicia o `wine`, ignorando o que está gravado no registro para esse campo específico.
 
 Confirme com:
