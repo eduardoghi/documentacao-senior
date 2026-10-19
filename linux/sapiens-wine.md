@@ -343,6 +343,31 @@ session    optional   pam_mount.so
 
 Depois de um novo login, `klist` e `findmnt` devem mostrar o ticket Kerberos e os compartilhamentos montados.
 
+### Desempenho com `nouser_xattr`
+
+Ao listar uma pasta, o Wine consulta dois atributos estendidos de cada arquivo, `user.WINEREPARSE` e `user.DOSATTRIB`, com `getxattr`. Num compartilhamento CIFS cada consulta é uma ida ao servidor, mesmo quando o arquivo não tem o atributo e a resposta é `ENODATA`.
+
+O efeito aparece em pastas grandes. `Sapiens/Modelos` tem cerca de 6 mil arquivos, e a aba Relatórios do gerenciador de artefatos lista a pasta e lê o cabeçalho dos modelos. Medido com `strace -c -w` durante uma expansão da árvore, foram 8.726 chamadas de `getxattr` de cerca de 2 ms cada, mais de 20 segundos de espera. A thread principal do ERP passou a maior parte da expansão bloqueada nessas chamadas, e a árvore levou uns 55 segundos.
+
+Com `nouser_xattr` o kernel responde `EOPNOTSUPP` sem falar com o servidor. A mesma expansão caiu para uns 7 segundos, com o mesmo `svcl02.bpl` nas duas medições.
+
+Para testar sem desmontar, remonte o compartilhamento com a opção:
+
+```bash
+sudo mount -o remount,nouser_xattr "$HOME/mnt/senior"
+```
+
+`user_xattr` no lugar de `nouser_xattr` desfaz a mudança. Para valer em todo login, acrescente a opção ao `options` do volume em `/etc/security/pam_mount.conf.xml`:
+
+```xml
+options="sec=krb5,cruid=<uid>,uid=<uid>,gid=<gid>,nouser_xattr"
+```
+
+Para conferir, `mount` deve listar `nouser_xattr` na linha do compartilhamento, e `getxattr` nos arquivos da pasta passa a retornar `Operation not supported` na hora.
+
+> [!NOTE]
+> Sem os atributos estendidos o Wine não grava os atributos DOS (oculto, somente leitura e sistema) nos arquivos desse compartilhamento e usa só as permissões do arquivo. Leitura e gravação do conteúdo não mudam. No Windows nativo o problema não existe, porque o acesso ao SMB não passa por `getxattr`.
+
 ## Atalho no KDE Plasma
 
 Crie `~/.local/share/applications/senior-sapiens.desktop`:
