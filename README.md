@@ -22,6 +22,7 @@ Documentação dos sistemas Senior, com funcionalidades dos produtos, procedimen
 ## Índice
 - [ERP](#erp)
   - [Erros e Situações](#erros-e-situações)
+- [Regras LSP](#regras-lsp)
 - [SQLMon](#sqlmon)
 - [SDE](#sde)
 - [WMS Silt](#wms-silt)
@@ -172,6 +173,14 @@ END;
 Agora abra o ERP e tente a transferência. A mensagem não deve mais aparecer, porque o valor de intwms retorna 'N' pela view criada, e não pela tabela original. Assim, você executa a transferência sem alterar a tabela e sem impactar outros usuários.
 
 Após concluir a transferência, desative a trigger e reabra o sistema para evitar que ações futuras em seu ERP usem o valor mascarado de intwms e impeçam a integração com o WMS por engano.
+
+---
+
+## Regras LSP
+
+Funcionamento das regras LSP do ERP, a linguagem de customização usada nos identificadores de regra, telas e relatórios.
+
+[Documentação das regras LSP](lsp/regras-lsp.md)
 
 ---
 
