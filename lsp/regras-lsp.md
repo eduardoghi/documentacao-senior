@@ -143,3 +143,29 @@ funcao Contar(); {
     nRes = nCont;
 }
 ```
+
+## Recursão
+
+Uma função pode chamar a si mesma. Os parâmetros são separados por chamada. Depois que a chamada interna volta, a função continua vendo os próprios valores. Já as variáveis declaradas com `definir` dentro da função são globais, como descrito acima, e a chamada interna pode sobrescrever o valor delas. Passe por parâmetro o que precisa sobreviver à chamada.
+
+```lsp
+definir numero nRes;
+definir funcao Fatorial(numero n, numero end r);
+
+Fatorial(3, nRes);
+@ nRes vale 6 @
+
+funcao Fatorial(numero n, numero end r); {
+    definir numero nSub;
+    definir numero nArg;
+    se (n <= 1) {
+        r = 1;
+    } senao {
+        nArg = n - 1;
+        Fatorial(nArg, nSub);
+        r = n * nSub;
+    }
+}
+```
+
+A pilha de chamadas tem 64 KB. Cada chamada ocupa 8 bytes, mais 10 por parâmetro `numero` e 4 por parâmetro `end`. Ao passar do limite, a regra para com o erro "Estouro da pilha de execução da regra". Uma função com um parâmetro `numero` aguenta 1.000 níveis, e com 10.000 a pilha estoura.
