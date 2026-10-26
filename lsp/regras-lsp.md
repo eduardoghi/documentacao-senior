@@ -169,3 +169,49 @@ funcao Fatorial(numero n, numero end r); {
 ```
 
 A pilha de chamadas tem 64 KB. Cada chamada ocupa 8 bytes, mais 10 por parâmetro `numero` e 4 por parâmetro `end`. Ao passar do limite, a regra para com o erro "Estouro da pilha de execução da regra". Uma função com um parâmetro `numero` aguenta 1.000 níveis, e com 10.000 a pilha estoura.
+
+## Limites
+
+### Tamanho do alfa
+
+Uma variável alfa não tem o limite de 255 caracteres. Uma variável montada com 1.000 concatenações fica com 1.000 caracteres.
+
+### Índice de tabela
+
+O índice de uma `Tabela` começa em 1. Índice 0 ou maior que o tamanho declarado para a regra com o erro "Indexando fora dos limites". Índice com casas decimais é truncado, então `T[2.9]` acessa `T[2]`.
+
+Índice negativo não é conferido. A regra não dá erro e acessa a memória antes da tabela, onde ficam as variáveis declaradas antes dela. No teste abaixo, `T[-1]` devolveu o valor de `nI`, e uma atribuição a `T[-1]` sobrescreve o `nI` sem nenhum aviso. Confira o índice antes de usar quando ele vier de uma conta:
+
+```lsp
+definir numero nA;
+definir numero nI;
+definir numero nTam;
+definir Tabela T[3] = {Numero nVal;};
+
+nI = -1;
+nA = T[nI].nVal;
+@ nA vale -1, o valor de nI @
+
+T[nI].nVal = 77;
+@ nI agora vale 77 @
+```
+
+### Precisão dos números
+
+O tipo `numero` guarda o valor como ponto flutuante, mas toda operação aritmética (`+`, `-`, `*` e `/`) e toda comparação arredondam os operandos para 18 dígitos significativos antes de calcular. Por isso:
+
+- `0.1 + 0.2 = 0.3` é verdadeiro, ao contrário do que acontece com ponto flutuante puro;
+- `1 / 3 * 3 = 1` é falso, porque `1 / 3` vira 0,333333333333333333 e o resultado fica 0,999999999999999999;
+- números com 19 dígitos ou mais perdem os últimos dígitos, e `nA = nA + 3` é verdadeiro com `nA` igual a 1234567890123456780.
+
+Quando o resultado de uma divisão precisa ser comparado com um valor exato, arredonde antes de comparar:
+
+```lsp
+nC = nA / nB * nB;
+Arredonda(nC, 2);
+se (nC = 1) {
+    ...
+}
+```
+
+O arredondamento tem custo. Num laço de 100.000 voltas, trocar `nX = nY` por `nX = nY + nZ` levou o tempo de 422 ms para 827 ms, cerca de 4 microssegundos por soma. Só faz diferença em laços com centenas de milhares de contas.
