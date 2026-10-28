@@ -170,6 +170,82 @@ funcao Fatorial(numero n, numero end r); {
 
 A pilha de chamadas tem 64 KB. Cada chamada ocupa 8 bytes, mais 10 por parâmetro `numero` e 4 por parâmetro `end`. Ao passar do limite, a regra para com o erro "Estouro da pilha de execução da regra". Uma função com um parâmetro `numero` aguenta 1.000 níveis, e com 10.000 a pilha estoura.
 
+## Campos de cursor
+
+Ao compilar `cursor.CAMPO`, o compilador troca o nome do campo pela posição da coluna no último `cursor.SQL` daquele cursor que aparece antes dessa linha no fonte. Na execução, a regra lê a coluna dessa posição no SELECT que estiver aberto, seja ele qual for. O `cursor.SQL` executado atualiza a lista de colunas do cursor, mas não a posição que já foi compilada.
+
+O compilador lê o fonte de cima para baixo e não leva em conta quem chama cada função. Quando o mesmo cursor é aberto com SELECTs de colunas em ordem diferente, uma função que lê o cursor fica com as posições do SELECT escrito acima dela no fonte, mesmo quando é chamada depois de outro. A leitura traz outra coluna sem dar erro.
+
+Neste exemplo, `ProcessarItens` e `ProcessarPendencia` abrem `cur` com SELECTs diferentes e as duas chamam `LerContrato`. Como `LerContrato` está no fonte logo abaixo de `ProcessarItens`, `cur.CTRCVP` foi compilado como a segunda coluna. Chamada a partir de `ProcessarPendencia`, a função lê `qtdbai`:
+
+```lsp
+funcao ProcessarItens(); {
+    cur.SQL "SELECT tabela.seqipd, tabela.ctrcvp FROM tabela";
+    cur.AbrirCursor();
+    enquanto (cur.Achou) {
+        LerContrato();
+        cur.Proximo();
+    }
+    cur.FecharCursor();
+}
+
+funcao LerContrato(); {
+    nCtrCvp = cur.CTRCVP;
+}
+
+funcao ProcessarPendencia(); {
+    cur.SQL "SELECT tabela.seqipd, tabela.qtdbai, tabela.ctrcvp FROM tabela";
+    cur.AbrirCursor();
+    enquanto (cur.Achou) {
+        LerContrato();
+        @ nCtrCvp recebeu o qtdbai @
+        cur.Proximo();
+    }
+    cur.FecharCursor();
+}
+```
+
+Leia os campos no próprio loop, logo depois do `cursor.SQL` daquele cursor, e passe os valores para a função por variável ou parâmetro. Usar um cursor diferente para cada SELECT também resolve.
+
+Para confirmar na sua versão, compile a regra abaixo numa base com uma filial de código diferente do da empresa. A mensagem mostra o código da empresa, e não o da filial. A função `LerComSelectA` nunca é chamada e só serve para deixar o primeiro SELECT acima de `LerFilial` no fonte.
+
+```lsp
+definir cursor cur;
+definir alfa aFil;
+definir alfa aMsg;
+definir numero nFil;
+definir funcao LerComSelectA();
+definir funcao LerFilial();
+definir funcao LerComSelectB();
+
+LerComSelectB();
+IntParaAlfa(nFil, aFil);
+aMsg = "CODFIL lido: " + aFil + " [OK]";
+Mensagem(Retorna, aMsg);
+
+funcao LerComSelectA(); {
+    cur.SQL "SELECT e070fil.codemp, e070fil.codfil FROM e070fil WHERE e070fil.codfil <> e070fil.codemp";
+    cur.AbrirCursor();
+    se (cur.Achou) {
+        LerFilial();
+    }
+    cur.FecharCursor();
+}
+
+funcao LerFilial(); {
+    nFil = cur.CODFIL;
+}
+
+funcao LerComSelectB(); {
+    cur.SQL "SELECT e070fil.codfil, e070fil.codemp FROM e070fil WHERE e070fil.codfil <> e070fil.codemp";
+    cur.AbrirCursor();
+    se (cur.Achou) {
+        LerFilial();
+    }
+    cur.FecharCursor();
+}
+```
+
 ## Limites
 
 ### Tamanho do alfa
