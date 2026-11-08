@@ -16,7 +16,9 @@ O código principal é executado de cima para baixo. O compilador coloca um "ret
 Na prática:
 
 - o corpo de uma função só roda quando ela é chamada;
-- o que estiver depois da primeira implementação de função nunca é executado, e nem a compilação nem a execução mostram erro.
+- o corpo vai do `funcao` até a próxima implementação de função ou o fim da regra, e não só até o fim do bloco `{ }`;
+- o que estiver depois do bloco de uma função faz parte dela e roda toda vez que ela é chamada;
+- o código principal nunca chega nesse trecho, e nem a compilação nem a execução mostram erro.
 
 Por isso o código principal deve ficar inteiro antes das implementações de função:
 
@@ -44,11 +46,11 @@ funcao GerarLog(); {
     ...
 }
 
-@ Este trecho nunca é executado @
+@ Este trecho roda dentro de GerarLog, a cada chamada @
 nTotal = 0;
 ```
 
-Para confirmar na sua versão, coloque uma `Mensagem` depois da última função de uma regra de teste. Ela não aparece.
+Para confirmar na sua versão, coloque uma `Mensagem` depois da última função de uma regra de teste e chame essa função no código principal. A mensagem aparece, porque faz parte da função.
 
 ## Operadores `e` e `ou`
 
