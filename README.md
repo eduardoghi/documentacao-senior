@@ -176,6 +176,20 @@ Após concluir a transferência, desative a trigger e reabra o sistema para evit
 
 ---
 
+#### Situação: regra que chama um web service interno novo dá "serviço ... não encontrado" em parte das estações
+
+A regra compila e roda na estação de quem importou o web service, mas nas outras aparece, por exemplo, "Regra 123: serviço COM.EXEMPLO.SERVICO não encontrado", mesmo com o serviço gravado no banco (`R960SRV` e `R960PRT`).
+
+Motivo:
+
+Cada ERP aberto lê a lista de web services internos do banco uma vez, no primeiro uso de um web service, e guarda essa lista em memória até ser fechado. Quem já estava com o ERP aberto quando o serviço foi criado não enxerga ele. Na estação que importou pelo gerenciador de artefatos funciona, porque a importação acrescenta o serviço na lista do próprio processo.
+
+Solução:
+
+Importe o web service, ou a porta nova, e só ative a regra que chama ele depois que todos fecharam e abriram o ERP, por exemplo no dia seguinte. Quem já viu o erro resolve fechando e abrindo o ERP.
+
+---
+
 ## Regras LSP
 
 Funcionamento das regras LSP do ERP, a linguagem de customização usada nos identificadores de regra, telas e relatórios.
