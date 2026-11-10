@@ -858,6 +858,64 @@ No Senior-X você pode ver qual é o usuário que faz a integração em Tecnolog
 
 <img width="950" height="576" alt="image" src="https://github.com/user-attachments/assets/0e8b6559-8f70-41a4-a1be-e1f8c76d1561" />
 
+***
+
+#### Situação: pré-fatura parada em "Aguardando Integração WMS" sem nunca ter chegado ao WMS
+
+A pré-fatura fica na situação 6 (Aguardando Integração WMS), e a ordem de separação dela na `E998OSC` fica com `SITINT = 3` (Exportado) e `ESTWMS` vazio. O ERP enviou a ordem, mas o WMS não confirmou o recebimento, que é o estágio 12 (Digitado/Importado). A mensagem do WMS não fica gravada no ERP, e o monitor de integrações do Senior-X não mostra registros antigos.
+
+Para listar as ordens de pré-fatura nesse estado há mais de dois dias:
+
+```sqlpl
+SELECT
+    e998pfe.numane,
+    e998pfe.numpfa,
+    e998osc.ideuni,
+    e998osc.datger
+FROM
+    e998osc
+    INNER JOIN e998pfe
+        ON e998pfe.ideosc = e998osc.ideuni
+WHERE
+    e998osc.tipdoc = 2
+    AND e998osc.sitint = 3
+    AND e998osc.estwms IS NULL
+    AND e998osc.datger < TRUNC(SYSDATE) - 2
+ORDER BY
+    e998osc.datger
+```
+
+Compare o envio gravado na `E998OSP` (campo `DADINT`) com o de uma pré-fatura que integrou. Num dos casos o produto tinha ido sem código de barras (`codigoBarrasLivre` em branco), e o WMS recusou a ordem.
+
+Reenviar não adianta quando o problema estava no cadastro, porque a `E998OSP` guarda o envio antigo. A saída é excluir a pré-fatura e gerar de novo.
+
+A tela Exclusão de Cargas (F135ECA) não deixa marcar a pré-fatura e mostra "Há itens integrados com ordens de separação do WMS, estes não foram marcados e não poderão ser excluídos!". Ela libera a exclusão só quando a ordem ligada à pré-fatura tem `SITINT` 1 (Aguardando Exportação) ou 6 (Reaberto). Use o 6, porque o 1 é a fila de envio, e a integração pode mandar a ordem antiga antes da exclusão. A situação 5 (Cancelado) continua bloqueando.
+
+1. Volte a pré-fatura para 2 (Em Preparação) e a ordem para 6:
+
+```sqlpl
+UPDATE e135pfa
+   SET sitpfa = 2
+ WHERE codemp = :codemp
+   AND codfil = :codfil
+   AND numane = :numane
+   AND numpfa = :numpfa
+   AND sitpfa = 6;
+
+UPDATE e998osc
+   SET sitint = 6
+ WHERE ideuni = :ideuni
+   AND tipdoc = 2
+   AND sitint = 3;
+
+COMMIT;
+```
+
+2. Logo em seguida, exclua a pré-fatura na F135ECA. A exclusão devolve a reserva de análise (`QTDRAE`) para a reserva do pedido (`QTDRES`), volta os itens do pedido para a situação 1, apaga o vínculo na `E998PFE` e deixa a ordem antiga com `SITINT = 98`, como em qualquer exclusão.
+3. Gere a pré-fatura de novo. A ordem nova deve chegar ao WMS em alguns minutos, com `ESTWMS = 12`.
+
+Não feche de novo a pré-fatura voltada para a situação 2 em vez de excluir. A reserva de análise continua lá, e o fechamento pode reservar o estoque outra vez.
+
 ---
 
 ## Linux
